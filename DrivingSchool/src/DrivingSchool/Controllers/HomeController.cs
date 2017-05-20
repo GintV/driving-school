@@ -1,4 +1,6 @@
+using DrivingSchool.Entities;
 using DrivingSchool.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 /**
@@ -6,24 +8,32 @@ using Microsoft.AspNetCore.Mvc;
 */
 namespace DrivingSchool.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private StudentData m_studentData;
+        private IDataService<User> m_userData;
 
-        public HomeController(StudentData studentData)
+        public HomeController(IDataService<User> userData)
         {
-            m_studentData = studentData;
+            m_userData = userData;
         }
+
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            var model = m_studentData.GetAll();
-
-            return View(model);
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Main", "Home");
+            }
+            
+            return View();
         }
 
-        public void ShowMainMenu()
+        public IActionResult Main()
         {
+            var model = m_userData.GetAll();
 
+            return View(model);
         }
     }
 }

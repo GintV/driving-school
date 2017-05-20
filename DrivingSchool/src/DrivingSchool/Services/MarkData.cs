@@ -8,7 +8,7 @@ using DrivingSchool.Entities.Context;
 */
 namespace DrivingSchool.Services
 {
-    public class MarkData : Service<Mark>
+    public class MarkData : DataService<Mark>
     {
         public MarkData(DrivingSchoolDbContext context) : base(context) { }
 

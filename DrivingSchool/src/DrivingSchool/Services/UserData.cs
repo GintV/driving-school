@@ -8,14 +8,14 @@ using System.Linq;
 */
 namespace DrivingSchool.Services
 {
-    public class UserData : Service<User>
+    public class UserData : DataService<User>
     {
         public UserData(DrivingSchoolDbContext context) : base(context) { }
 
         public override User Get(int id) =>
-            m_context.Users.FirstOrDefault(s => s.Id == id.ToString());
+            m_context.GenericUsers.FirstOrDefault(user => user.Id == id);
 
         public override IQueryable<User> GetAll() =>
-            m_context.Users;
+            m_context.GenericUsers;
     }
 }

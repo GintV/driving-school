@@ -8,7 +8,7 @@ using System.Linq;
 */
 namespace DrivingSchool.Services
 {
-    public class MileagePointData : Service<MileagePoint>
+    public class MileagePointData : DataService<MileagePoint>
     {
         public MileagePointData(DrivingSchoolDbContext context) : base(context) { }
 

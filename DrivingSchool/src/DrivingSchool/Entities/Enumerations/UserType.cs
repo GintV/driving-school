@@ -5,8 +5,9 @@ namespace DrivingSchool.Entities.Enumerations
 {
     public enum UserType
     {
+        None,
+        Student,
         Instructor,
-        Manager,
-        Student
+        Manager
     }
 }

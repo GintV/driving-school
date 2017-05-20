@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DrivingSchool.Migrations
 {
-    public partial class Identity : Migration
+    public partial class M1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,6 +40,31 @@ namespace DrivingSchool.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(nullable: false),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
+                    PhoneNumber = table.Column<string>(nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    SecurityStamp = table.Column<string>(nullable: true),
+                    TwoFactorEnabled = table.Column<bool>(nullable: false),
+                    UserName = table.Column<string>(maxLength: 256, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -121,95 +146,6 @@ namespace DrivingSchool.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CarUsages",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CarId = table.Column<int>(nullable: true),
-                    ClassUsedInId = table.Column<int>(nullable: true),
-                    Date = table.Column<DateTime>(nullable: false),
-                    InstructorId = table.Column<string>(nullable: true),
-                    MileageAfter = table.Column<int>(nullable: false),
-                    MileageBefore = table.Column<int>(nullable: false),
-                    Type = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CarUsages", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_CarUsages_Cars_CarId",
-                        column: x => x.CarId,
-                        principalTable: "Cars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    BirthDate = table.Column<DateTime>(nullable: false),
-                    ConcurrencyStamp = table.Column<string>(nullable: true),
-                    Discriminator = table.Column<string>(nullable: false),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    PersonalNo = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(nullable: false),
-                    SecurityStamp = table.Column<string>(nullable: true),
-                    State = table.Column<int>(nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    Type = table.Column<int>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    AssignedCarId = table.Column<int>(nullable: true),
-                    HasTheoryClasses = table.Column<bool>(nullable: true),
-                    PracticeCount = table.Column<int>(nullable: true),
-                    TheoryClassesId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AspNetUsers_Cars_AssignedCarId",
-                        column: x => x.AssignedCarId,
-                        principalTable: "Cars",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Marks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ClassMark = table.Column<int>(nullable: false),
-                    Comment = table.Column<string>(nullable: true),
-                    StudentId = table.Column<string>(nullable: true),
-                    Type = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Marks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Marks_AspNetUsers_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
@@ -275,6 +211,89 @@ namespace DrivingSchool.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CarUsages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    CarId = table.Column<int>(nullable: true),
+                    ClassUsedInId = table.Column<int>(nullable: true),
+                    Date = table.Column<DateTime>(nullable: false),
+                    InstructorId = table.Column<int>(nullable: true),
+                    MileageAfter = table.Column<int>(nullable: false),
+                    MileageBefore = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarUsages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CarUsages_Cars_CarId",
+                        column: x => x.CarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GenericUsers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    BirthDate = table.Column<DateTime>(nullable: false),
+                    Discriminator = table.Column<string>(nullable: false),
+                    FirstName = table.Column<string>(nullable: true),
+                    IdentityUserId = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    PersonalNo = table.Column<string>(nullable: true),
+                    State = table.Column<int>(nullable: false),
+                    Type = table.Column<int>(nullable: false),
+                    AssignedCarId = table.Column<int>(nullable: true),
+                    HasTheoryClasses = table.Column<bool>(nullable: true),
+                    PracticeCount = table.Column<int>(nullable: true),
+                    TheoryClassesId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GenericUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GenericUsers_Cars_AssignedCarId",
+                        column: x => x.AssignedCarId,
+                        principalTable: "Cars",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GenericUsers_AspNetUsers_IdentityUserId",
+                        column: x => x.IdentityUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Marks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ClassMark = table.Column<int>(nullable: false),
+                    Comment = table.Column<string>(nullable: true),
+                    StudentId = table.Column<int>(nullable: true),
+                    Type = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Marks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Marks_GenericUsers_StudentId",
+                        column: x => x.StudentId,
+                        principalTable: "GenericUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Classes",
                 columns: table => new
                 {
@@ -283,11 +302,11 @@ namespace DrivingSchool.Migrations
                     Date = table.Column<DateTime>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false),
-                    InstructorId = table.Column<string>(nullable: true),
+                    InstructorId = table.Column<int>(nullable: true),
                     MarkId = table.Column<int>(nullable: true),
                     StartTime = table.Column<DateTime>(nullable: false),
                     State = table.Column<int>(nullable: false),
-                    StudentId = table.Column<string>(nullable: true),
+                    StudentId = table.Column<int>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     IsMain = table.Column<bool>(nullable: true),
                     MainClassesId = table.Column<int>(nullable: true),
@@ -298,9 +317,9 @@ namespace DrivingSchool.Migrations
                 {
                     table.PrimaryKey("PK_Classes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Classes_AspNetUsers_InstructorId",
+                        name: "FK_Classes_GenericUsers_InstructorId",
                         column: x => x.InstructorId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "GenericUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -310,9 +329,9 @@ namespace DrivingSchool.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Classes_AspNetUsers_StudentId",
+                        name: "FK_Classes_GenericUsers_StudentId",
                         column: x => x.StudentId,
-                        principalTable: "AspNetUsers",
+                        principalTable: "GenericUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -377,24 +396,18 @@ namespace DrivingSchool.Migrations
                 column: "OwnerCarId");
 
             migrationBuilder.CreateIndex(
-                name: "EmailIndex",
-                table: "AspNetUsers",
-                column: "NormalizedEmail");
+                name: "IX_GenericUsers_IdentityUserId",
+                table: "GenericUsers",
+                column: "IdentityUserId");
 
             migrationBuilder.CreateIndex(
-                name: "UserNameIndex",
-                table: "AspNetUsers",
-                column: "NormalizedUserName",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_AssignedCarId",
-                table: "AspNetUsers",
+                name: "IX_GenericUsers_AssignedCarId",
+                table: "GenericUsers",
                 column: "AssignedCarId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AspNetUsers_TheoryClassesId",
-                table: "AspNetUsers",
+                name: "IX_GenericUsers_TheoryClassesId",
+                table: "GenericUsers",
                 column: "TheoryClassesId");
 
             migrationBuilder.CreateIndex(
@@ -406,6 +419,17 @@ namespace DrivingSchool.Migrations
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
                 column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "EmailIndex",
+                table: "AspNetUsers",
+                column: "NormalizedEmail");
+
+            migrationBuilder.CreateIndex(
+                name: "UserNameIndex",
+                table: "AspNetUsers",
+                column: "NormalizedUserName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -436,16 +460,16 @@ namespace DrivingSchool.Migrations
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_CarUsages_AspNetUsers_InstructorId",
+                name: "FK_CarUsages_GenericUsers_InstructorId",
                 table: "CarUsages",
                 column: "InstructorId",
-                principalTable: "AspNetUsers",
+                principalTable: "GenericUsers",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Restrict);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_AspNetUsers_Classes_TheoryClassesId",
-                table: "AspNetUsers",
+                name: "FK_GenericUsers_Classes_TheoryClassesId",
+                table: "GenericUsers",
                 column: "TheoryClassesId",
                 principalTable: "Classes",
                 principalColumn: "Id",
@@ -455,12 +479,12 @@ namespace DrivingSchool.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Cars_AssignedCarId",
-                table: "AspNetUsers");
+                name: "FK_GenericUsers_Cars_AssignedCarId",
+                table: "GenericUsers");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_AspNetUsers_Classes_TheoryClassesId",
-                table: "AspNetUsers");
+                name: "FK_GenericUsers_Classes_TheoryClassesId",
+                table: "GenericUsers");
 
             migrationBuilder.DropTable(
                 name: "CarUsages");
@@ -497,6 +521,9 @@ namespace DrivingSchool.Migrations
 
             migrationBuilder.DropTable(
                 name: "Marks");
+
+            migrationBuilder.DropTable(
+                name: "GenericUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

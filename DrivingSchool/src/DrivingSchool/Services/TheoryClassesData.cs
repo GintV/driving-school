@@ -8,7 +8,7 @@ using DrivingSchool.Entities.Context;
 */
 namespace DrivingSchool.Services
 {
-    public class TheoryClassesData : Service<TheoryClasses>
+    public class TheoryClassesData : DataService<TheoryClasses>
     {
         public TheoryClassesData(DrivingSchoolDbContext context) : base(context) { }
 

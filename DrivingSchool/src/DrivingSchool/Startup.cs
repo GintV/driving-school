@@ -31,19 +31,26 @@ namespace DrivingSchool
 
         /// <summary> This method gets called by the runtime. Use this method to add services to
         /// the container. For more information on how to configure your application, visit
-        /// http://go.microsoft.com/fwlink/?LinkID=398940/summary>.
+        /// go.microsoft.com/fwlink/?LinkID=398940.<summary>
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddSingleton(Configuration);
-            services.AddScoped<StudentData>();
+            services.AddDataServices();
             services.AddDbContext<DrivingSchoolDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DrivingSchool"));
             });
-            services.AddIdentity<User, IdentityRole>().
-                AddEntityFrameworkStores<DrivingSchoolDbContext>();
+            services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 3;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+            }).AddEntityFrameworkStores<DrivingSchoolDbContext>();
+            
         }
 
         /// <summary>This method gets called by the runtime. Use this method to configure the HTTP
@@ -63,11 +70,19 @@ namespace DrivingSchool
 
             app.UseFileServer();
 
+            app.UseNodeModules(env.ContentRootPath);
+
             app.UseIdentity();
+
+            app.UseCookieAuthentication(new CookieAuthenticationOptions
+            {
+                AutomaticChallenge = true,
+                LoginPath = new PathString("/Users/Login")
+            });
 
             app.UseMvc(ConfigureRoutes);
 
-            app.Run(context => context.Response.WriteAsync("Opps! Nothing to see here."));
+            //app.Run(context => context.Response.WriteAsync("Opps! Nothing to see here."));
         }
 
         private void ConfigureRoutes(IRouteBuilder routeBuilder) =>

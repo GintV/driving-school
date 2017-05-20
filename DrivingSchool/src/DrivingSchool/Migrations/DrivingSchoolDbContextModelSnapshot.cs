@@ -51,7 +51,7 @@ namespace DrivingSchool.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<string>("InstructorId");
+                    b.Property<int?>("InstructorId");
 
                     b.Property<int>("MileageAfter");
 
@@ -84,7 +84,7 @@ namespace DrivingSchool.Migrations
 
                     b.Property<DateTime>("EndTime");
 
-                    b.Property<string>("InstructorId");
+                    b.Property<int?>("InstructorId");
 
                     b.Property<int?>("MarkId");
 
@@ -92,7 +92,7 @@ namespace DrivingSchool.Migrations
 
                     b.Property<int>("State");
 
-                    b.Property<string>("StudentId");
+                    b.Property<int?>("StudentId");
 
                     b.Property<int>("Type");
 
@@ -139,7 +139,7 @@ namespace DrivingSchool.Migrations
 
                     b.Property<string>("Comment");
 
-                    b.Property<string>("StudentId");
+                    b.Property<int?>("StudentId");
 
                     b.Property<int>("Type");
 
@@ -170,66 +170,31 @@ namespace DrivingSchool.Migrations
 
             modelBuilder.Entity("DrivingSchool.Entities.User", b =>
                 {
-                    b.Property<string>("Id");
-
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<DateTime>("BirthDate");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
 
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<string>("Email")
-                        .HasAnnotation("MaxLength", 256);
-
-                    b.Property<bool>("EmailConfirmed");
-
                     b.Property<string>("FirstName");
+
+                    b.Property<string>("IdentityUserId");
 
                     b.Property<string>("LastName");
 
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasAnnotation("MaxLength", 256);
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasAnnotation("MaxLength", 256);
-
-                    b.Property<string>("PasswordHash");
-
                     b.Property<string>("PersonalNo");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
 
                     b.Property<int>("State");
 
-                    b.Property<bool>("TwoFactorEnabled");
-
                     b.Property<int>("Type");
-
-                    b.Property<string>("UserName")
-                        .HasAnnotation("MaxLength", 256);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                    b.HasIndex("IdentityUserId");
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex");
-
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("GenericUsers");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
@@ -272,6 +237,55 @@ namespace DrivingSchool.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims");
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser", b =>
+                {
+                    b.Property<string>("Id");
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("Email")
+                        .HasAnnotation("MaxLength", 256);
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasAnnotation("MaxLength", 256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasAnnotation("MaxLength", 256);
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName")
+                        .HasAnnotation("MaxLength", 256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex");
+
+                    b.ToTable("AspNetUsers");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
@@ -441,6 +455,13 @@ namespace DrivingSchool.Migrations
                         .HasForeignKey("OwnerCarId");
                 });
 
+            modelBuilder.Entity("DrivingSchool.Entities.User", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser", "IdentityUser")
+                        .WithMany()
+                        .HasForeignKey("IdentityUserId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
@@ -451,7 +472,7 @@ namespace DrivingSchool.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("DrivingSchool.Entities.User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser")
                         .WithMany("Claims")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -459,7 +480,7 @@ namespace DrivingSchool.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("DrivingSchool.Entities.User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser")
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -472,7 +493,7 @@ namespace DrivingSchool.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("DrivingSchool.Entities.User")
+                    b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUser")
                         .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

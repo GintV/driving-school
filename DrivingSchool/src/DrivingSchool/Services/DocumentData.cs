@@ -8,7 +8,7 @@ using System.Linq;
 */
 namespace DrivingSchool.Services
 {
-    public class DocumentData : Service<Document>
+    public class DocumentData : DataService<Document>
     {
         public DocumentData(DrivingSchoolDbContext context) : base(context) { }
 

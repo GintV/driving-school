@@ -1,22 +1,10 @@
-﻿@model IEnumerable<DrivingSchool.Entities.Student>
+﻿@{ 
+    ViewBag.Title = "Welcome";
+}
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Driving school</title>
-</head>
-<body>
-    <h1>Hello from a view!</h1>
-    
+<h1>Hello from a view!</h1>
 
-    <table>
-        @foreach(var student in Model)
-        {
-            <tr>
-                <td>@student.Id</td>
-                <td>@student.FirstName</td>
-            </tr>
 
-        }
-    </table>
-</body>
-</html>
+@section footer {
+
+}

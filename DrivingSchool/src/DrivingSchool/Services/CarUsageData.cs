@@ -9,7 +9,7 @@ using DrivingSchool.Entities.Context;
 */
 namespace DrivingSchool.Services
 {
-    public class CarUsageData : Service<CarUsage>
+    public class CarUsageData : DataService<CarUsage>
     {
         public CarUsageData(DrivingSchoolDbContext context) : base(context) { }
 

@@ -8,7 +8,7 @@ using DrivingSchool.Entities.Context;
 */
 namespace DrivingSchool.Services
 {
-    public class CarData : Service<Car>
+    public class CarData : DataService<Car>
     {
         public CarData(DrivingSchoolDbContext context) : base(context) { }
 

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DrivingSchool.Entities.Context
 {
-    public class DrivingSchoolDbContext : IdentityDbContext<User>
+    public class DrivingSchoolDbContext : IdentityDbContext<IdentityUser>
     {
         public DrivingSchoolDbContext(DbContextOptions options) : base(options) { }
 
@@ -16,5 +16,6 @@ namespace DrivingSchool.Entities.Context
         public DbSet<MileagePoint> MileagePoints { get; set; }
         public DbSet<Student> Students { get; set; }
         public DbSet<TheoryClasses> TheoryClasses { get; set; }
+        public DbSet<User> GenericUsers { get; set; }
     }
 }
