@@ -1,7 +1,9 @@
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 /**
 * @(#) MileagePointData.cs
@@ -20,14 +22,15 @@ namespace DrivingSchool.Services
 
 
 
-        public void GetCarsMileagePoints()
+        public IQueryable<MileagePoint> GetCarsMileagePoints(Car car)
         {
-            throw new NotImplementedException();
+            return m_context.MileagePoints.Where(p => p.OwnerCar == car);
         }
 
-        public void UpdateCarsMileagePoints()
+        public void UpdateCarsMileagePoints(Car car, List<MileagePoint> points)
         {
-            throw new NotImplementedException();
+            m_context.Database.ExecuteSqlCommand("DELETE FROM MileagePoints WHERE OwnerCarId = {0}", car.Id);
+            car.MileagePoints = points;
         }
     }
 }

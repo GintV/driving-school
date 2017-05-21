@@ -1,7 +1,9 @@
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 /**
 * @(#) DocumentData.cs
@@ -20,14 +22,15 @@ namespace DrivingSchool.Services
 
 
 
-        public void GetCarsDocuments()
+        public IQueryable<Document> GetCarsDocuments(Car car)
         {
-            throw new NotImplementedException();
+            return m_context.Documents.Where(p => p.OwnerCar == car);
         }
 
-        public void UpdateCarsDocuments()
+        public void UpdateCarsDocuments(Car car, List<Document> docs)
         {
-            throw new NotImplementedException();
+            m_context.Database.ExecuteSqlCommand("DELETE FROM Documents WHERE OwnerCarId = {0}", car.Id);
+            car.Documents = docs;
         }
     }
 }

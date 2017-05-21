@@ -1,0 +1,43 @@
+﻿@using DrivingSchool.Entities.Enumerations
+@model System.Collections.Generic.IEnumerable<Car>
+
+@{
+    ViewBag.Title += "Vehicle List";
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Driving school</title>
+</head>
+<body>
+    <h1>Vehicles</h1>
+    <button class="btn btn-success" onclick="location.href='@Url.Action("Create", "Autos", null)'">Add vehicle</button>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>License Plate</th>
+                <th>Manufacturer</th>
+                <th>Model</th>
+                <th>Date of Manufacture</th>
+                <th>Mileage</th>
+                <th>Gearbox Type</th>
+                <th>State</th>
+            </tr>
+        </thead>
+        @foreach (var car in Model)
+        {
+            <tr>
+                <td>@car.LicensePlate</td>
+                <td>@car.Brand</td>
+                <td>@car.Model</td>
+                <td>@car.ManufactureDate.ToString("d")</td>
+                <td>@car.Mileage</td>
+                <td>@car.Gearbox.GetDescription()</td>
+                <td>@car.State.GetDescription()</td>
+                <td>@Html.ActionLink("Details", "ViewCarInfo", "Autos", new { id = car.Id })</td>
+            </tr>
+
+        }
+    </table>
+</body>
+</html>

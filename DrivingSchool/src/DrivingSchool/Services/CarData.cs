@@ -20,9 +20,18 @@ namespace DrivingSchool.Services
 
 
 
-        public void Update()
+        public void Update(ViewModels.Autos.CarEditViewModel data)
         {
-            throw new NotImplementedException();
+            var toUpdate = m_context.Cars.FirstOrDefault(s => s.Id == data.Id);
+            if (toUpdate != null)
+            {
+                toUpdate.LicensePlate = data.LicensePlate;
+                toUpdate.Brand = data.Brand;
+                toUpdate.Model = data.Model;
+                toUpdate.ManufactureDate = data.ManufactureDate;
+                toUpdate.Mileage = data.Mileage;
+                toUpdate.Gearbox = data.Gearbox;
+            }
         }
 
         public void GetCarsForCarUsage()
