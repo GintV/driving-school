@@ -1,11 +1,13 @@
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Enumerations;
 using Microsoft.AspNetCore.Mvc;
 using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 /**
@@ -58,7 +60,7 @@ namespace DrivingSchool.Controllers
 
         public IActionResult ViewCarList()
         {
-            var model = m_carData.GetAll().OrderBy(m => m.LicensePlate);
+            var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).ThenBy(m => m.Model);
             return View(model);
         }
 
@@ -79,6 +81,8 @@ namespace DrivingSchool.Controllers
         [HttpPost]
         public IActionResult Create(CarCreationViewModel data)
         {
+            if (!ModelState.IsValid) return View(data);
+            ValidateCarData(data, ModelState);
             if (!ModelState.IsValid) return View(data);
             Car created = new Car
             {
@@ -155,6 +159,8 @@ namespace DrivingSchool.Controllers
         public IActionResult EditCarInfo(int id, CarEditViewModel data)
         {
             if (!ModelState.IsValid) return View(data);
+            ValidateCarData(data, ModelState);
+            if (!ModelState.IsValid) return View(data);
             Car modified = m_carData.Get(id);
             if (modified == null) return View(data);
             ((CarData)m_carData).Update(data);
@@ -181,9 +187,69 @@ namespace DrivingSchool.Controllers
 
         }
 
-        public void ValidateCarData()
+        public void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
         {
+            if (data.ManufactureDate > DateTime.Today)
+            {
+                state.AddModelError("ManufactureDate", "Mustn't be a future date");
+            }
+            if (!new Regex("[A-Z]{3}[' ']?[0-9]{3}").IsMatch(data.LicensePlate))
+            {
+                state.AddModelError("LicensePlate", "Must be in format XXX 000");
+            }
+            if (data.Documents != null)
+            {
+                for (var i = 0; i < data.Documents.Count; i++)
+                {
+                    if (data.Documents[i].StartDate > data.Documents[i].EndDate)
+                    {
+                        state.AddModelError("Documents[" + i + "].StartDate", "Start date mustn't be greather than end date");
+                    }
+                }
+            }
+            if (data.MileagePoints != null)
+            {
+                for (var i = 0; i < data.MileagePoints.Count; i++)
+                {
+                    if (data.MileagePoints[i].Mileage < 0)
+                    {
+                        state.AddModelError("MileagePoints[" + i + "].Mileage", "Mileage must be a positive integer");
+                    }
+                }
+            }
+        }
 
+        // TODO interface? merge views?
+        public void ValidateCarData(CarCreationViewModel data, ModelStateDictionary state)
+        {
+            if (data.ManufactureDate > DateTime.Today)
+            {
+                state.AddModelError("ManufactureDate", "Mustn't be a future date");
+            }
+            if (!new Regex("[A-Z]{3}[' ']?[0-9]{3}").IsMatch(data.LicensePlate))
+            {
+                state.AddModelError("LicensePlate", "Must be in format XXX 000");
+            }
+            if (data.Documents != null)
+            {
+                for (var i = 0; i < data.Documents.Count; i++)
+                {
+                    if (data.Documents[i].StartDate > data.Documents[i].EndDate)
+                    {
+                        state.AddModelError("Documents[" + i + "].StartDate", "Start date mustn't be greather than end date");
+                    }
+                }
+            }
+            if (data.MileagePoints != null)
+            {
+                for (var i = 0; i < data.MileagePoints.Count; i++)
+                {
+                    if (data.MileagePoints[i].Mileage < 0)
+                    {
+                        state.AddModelError("MileagePoints[" + i + "].Mileage", "Mileage must be a positive integer");
+                    }
+                }
+            }
         }
 
     }

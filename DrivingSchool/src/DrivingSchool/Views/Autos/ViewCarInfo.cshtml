@@ -4,94 +4,93 @@
 @{
     ViewBag.Title += "Vehicle " + Model.LicensePlate + " " + Model.Brand + " " + Model.Model;
 }
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <title>Driving school</title>
-</head>
-<body>
-    <div class="container">
-        <div class="well well-sm">
-            <h1>Vehicle's Info</h1>
-            <div class="form-group">
-                <button class="btn btn-default" onclick="location.href='@Url.Action("EditCarInfo", "Autos", new { id = Model.Id })'">Edit</button>
-            </div>
-            <fieldset>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.LicensePlate)
-                    @Html.TextBoxFor(m => m.LicensePlate, new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Brand)
-                    @Html.TextBoxFor(m => m.Brand, new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Model)
-                    @Html.TextBoxFor(m => m.Model, new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.ManufactureDate)
-                    @Html.TextBoxFor(m => m.ManufactureDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Mileage)
-                    @Html.TextBoxFor(m => m.Mileage, new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Gearbox)
-                    @Html.TextBoxFor(m => m.GearboxName, new { @class = "form-control", disabled = "disabled" })
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.State)
-                    @Html.TextBoxFor(m => m.StateName, new { @class = "form-control", disabled = "disabled" })
-                </div>
-            </fieldset>
-
+<div class="container">
+    <div class="form-group">
+        <button class="btn btn-default" onclick="location.href='@Url.Action("ViewCarList")'">
+            <span >
+            <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+            Back
+        </button>
+    </div>
+    <div class="well well-sm">
+        <h1>Vehicle's Info</h1>
+        <div class="form-group">
+            <button class="btn btn-default" onclick="location.href = '@Url.Action("EditCarInfo", "Autos", new {id = Model.Id})'">Edit</button>
         </div>
-        <div class="well well-sm">
-            <h2>Documents</h2>
-            <fieldset>
-                @if (Model.Documents != null && Model.Documents.Count != 0)
+        <fieldset>
+            <div class="form-group">
+                @Html.LabelFor(m => m.LicensePlate)
+                @Html.TextBoxFor(m => m.LicensePlate, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Brand)
+                @Html.TextBoxFor(m => m.Brand, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Model)
+                @Html.TextBoxFor(m => m.Model, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ManufactureDate)
+                @Html.TextBoxFor(m => m.ManufactureDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Mileage)
+                @Html.TextBoxFor(m => m.Mileage, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Gearbox)
+                @Html.TextBoxFor(m => m.GearboxName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.State)
+                @Html.TextBoxFor(m => m.StateName, new { @class = "form-control", disabled = "disabled" })
+            </div>
+        </fieldset>
+
+    </div>
+    <div class="well well-sm">
+        <h2>Documents</h2>
+        <fieldset>
+            @if (Model.Documents != null && Model.Documents.Count != 0)
             {
                 for (var i = 0; i < Model.Documents.Count; i++)
                 {
-                        <div class="form-group form-inline">
-                            <label>Type</label>
-                            <input type="text" class="form-control" disabled="disabled" value="@Model.Documents[i].Type.GetDescription()"/>
-                            <label>Valid from</label>
-                            @Html.TextBoxFor(m => m.Documents[i].StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
-                            <label>to</label>
-                            @Html.TextBoxFor(m => m.Documents[i].EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
-                        </div>
-                    }
+                    <div class="form-group form-inline">
+                        <label>Type</label>
+                        <input type="text" class="form-control" disabled="disabled" value="@Model.Documents[i].Type.GetDescription()" />
+                        <label>Valid from</label>
+                        @Html.TextBoxFor(m => m.Documents[i].StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
+                        <label>to</label>
+                        @Html.TextBoxFor(m => m.Documents[i].EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", disabled = "disabled" })
+                    </div>
                 }
-                else
-                {
-                    @: Vehicle doesn't have any documents.
             }
-            </fieldset>
-        </div>
-        <div class="well well-sm">
-            <h2>Mileage Checkpoints</h2>
-            <fieldset>
-                @if (Model.MileagePoints != null && Model.MileagePoints.Count != 0)
+            else
+            {
+                @: Vehicle doesn't have any documents.
+            }
+        </fieldset>
+    </div>
+    <div class="well well-sm">
+        <h2>Mileage Checkpoints</h2>
+        <fieldset>
+            @if (Model.MileagePoints != null && Model.MileagePoints.Count != 0)
             {
                 foreach (var point in Model.MileagePoints)
                 {
-                        <div class="form-group form-inline">
-                            <label>Mileage</label>
-                            <input class="form-control" type="text" value="@point.Mileage" disabled="disabled" />
-                            <label>Message</label>
-                            <input class="form-control" type="date" value="@point.Name" disabled="disabled" />
-                        </div>
-                    }
+                    <div class="form-group form-inline">
+                        <label>Mileage</label>
+                        <input class="form-control" type="text" value="@point.Mileage" disabled="disabled" />
+                        <label>Message</label>
+                        <input class="form-control" type="date" value="@point.Name" disabled="disabled" />
+                    </div>
                 }
-                else
-                {
-                    @: Vehicle doesn't have any mileage checkpoints.
             }
-            </fieldset>
-        </div>
+            else
+            {
+                @: Vehicle doesn't have any mileage checkpoints.
+            }
+        </fieldset>
     </div>
-</body>
-</html>
+</div>
