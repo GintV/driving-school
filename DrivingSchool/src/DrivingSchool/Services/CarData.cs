@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
+using DrivingSchool.Entities.Enumerations;
+using Microsoft.EntityFrameworkCore;
 
 /**
 * @(#) CarData.cs
@@ -39,9 +41,37 @@ namespace DrivingSchool.Services
             throw new NotImplementedException();
         }
 
-        public void ChangeState()
+        public void UpdateState(int id)
         {
-            throw new NotImplementedException();
+            var car = m_context.Cars.Include(c => c.Documents).Include(c => c.MileagePoints)
+                .FirstOrDefault(c => c.Id == id);
+            if (car == null) return;
+            if (car.Documents.FirstOrDefault(d => d.Type == DocumentType.ServiceApprovalOrder &&
+                                                  d.EndDate > DateTime.Today) == null)
+            {
+                if (car.Documents.FirstOrDefault(d => d.Type == DocumentType.UsageSuspensionOrder &&
+                                                      d.EndDate > DateTime.Today) == null)
+                {
+                    if (car.Documents.FirstOrDefault(d => (d.Type == DocumentType.InsurancePolicy ||
+                                                           d.Type == DocumentType.TechnicalInspection) &&
+                                                          d.EndDate < DateTime.Today) == null)
+                    {
+                        car.State = car.MileagePoints.FirstOrDefault(p => p.Mileage > car.Mileage) == null ? CarState.Operational : CarState.RequiresService;
+                    }
+                    else
+                    {
+                        car.State = CarState.NonOperational;
+                    }
+                }
+                else
+                {
+                    car.State = CarState.Unused;
+                }
+            }
+            else
+            {
+                car.State = CarState.InService;
+            }
         }
     }
 }

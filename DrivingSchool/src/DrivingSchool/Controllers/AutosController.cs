@@ -1,13 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Reflection;
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Enumerations;
 using Microsoft.AspNetCore.Mvc;
 using DrivingSchool.Services;
+using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 /**
 * @(#) AutosController.cs
@@ -30,7 +29,13 @@ namespace DrivingSchool.Controllers
         public IActionResult ViewCarInfo(int id)
         {
             var c = m_carData.Get(id);
-            // TODO if null
+            //if (c == null) return RedirectToAction("WrongNeighborhood");
+            if (c == null) return View("_Error", new ErrorViewModel
+            {
+                ErrorMessage = "Requested car was not found.",
+                ButtonName = "Go back to Vehicle list",
+                ButtonLink = Url.Action("ViewCarList", "Autos")
+            });
             var points = ((MileagePointData)m_mileagePointData).GetCarsMileagePoints(c).OrderBy(p => p.Mileage).ToList();
             var docs = ((DocumentData)m_documentData).GetCarsDocuments(c).OrderBy(d => d.Type).ThenByDescending(d => d.EndDate).ToList();
             var model = new CarViewModel
@@ -57,11 +62,6 @@ namespace DrivingSchool.Controllers
             return View(model);
         }
 
-        public void Update()
-        {
-
-        }
-
         [HttpGet]
         public IActionResult Create()
         {
@@ -79,7 +79,7 @@ namespace DrivingSchool.Controllers
         [HttpPost]
         public IActionResult Create(CarCreationViewModel data)
         {
-            if (!ModelState.IsValid) return View();
+            if (!ModelState.IsValid) return View(data);
             Car created = new Car
             {
                 Brand = data.Brand,
@@ -93,15 +93,12 @@ namespace DrivingSchool.Controllers
             ((DocumentData)m_documentData).UpdateCarsDocuments(created, data.Documents);
             ((MileagePointData)m_mileagePointData).UpdateCarsMileagePoints(created, data.MileagePoints);
             m_carData.SaveChanges();
+            ((CarData)m_carData).UpdateState(created.Id);
+            m_carData.SaveChanges();
             return RedirectToAction("ViewCarList");
         }
 
         public void ViewUsageReports()
-        {
-
-        }
-
-        public void SetFilterToCars()
         {
 
         }
@@ -126,15 +123,16 @@ namespace DrivingSchool.Controllers
 
         }
 
-        public void Insert()
-        {
-
-        }
         [HttpGet]
         public IActionResult EditCarInfo(int id)
         {
             var c = m_carData.Get(id);
-            // TODO if null
+            if (c == null) return View("_Error", new ErrorViewModel
+            {
+                ErrorMessage = "Requested car was not found.",
+                ButtonName = "Go back to Vehicle list",
+                ButtonLink = Url.Action("ViewCarList", "Autos")
+            }); ;
             var points = ((MileagePointData)m_mileagePointData).GetCarsMileagePoints(c).OrderBy(p => p.Mileage).ToList();
             var docs = ((DocumentData)m_documentData).GetCarsDocuments(c).OrderBy(d => d.Type).ThenByDescending(d => d.EndDate).ToList();
             var model = new CarEditViewModel
@@ -162,6 +160,8 @@ namespace DrivingSchool.Controllers
             ((CarData)m_carData).Update(data);
             ((DocumentData)m_documentData).UpdateCarsDocuments(modified, data.Documents);
             ((MileagePointData)m_mileagePointData).UpdateCarsMileagePoints(modified, data.MileagePoints);
+            m_carData.SaveChanges();
+            ((CarData)m_carData).UpdateState(id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarInfo", new { id = data.Id });
         }

@@ -1,0 +1,30 @@
+﻿@model DrivingSchool.ViewModels.ErrorViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Driving School - Error</title>
+    <link href="/node_modules/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+<div class="container-fluid text-center">
+    <div class="jumbotron">
+        <h1>You seem to be lost</h1>
+        <h3>@Model.ErrorMessage</h3>
+        @if (Model.ButtonLink != null)
+        {
+            <div class="container">
+                <button class="btn-default btn" onclick="location.href = '@Model.ButtonLink'">@Model.ButtonName</button>
+            </div><br/>
+        }
+        <div class="container">
+            <button class="btn-default btn" onclick="location.href = '@Url.Action("", "", null)'">Go back to Home</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
