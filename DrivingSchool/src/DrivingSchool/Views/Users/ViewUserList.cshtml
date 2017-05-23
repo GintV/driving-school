@@ -1,0 +1,38 @@
+﻿@using DrivingSchool.Entities.Enumerations
+@model System.Collections.Generic.IEnumerable<User>
+
+@{
+    ViewBag.Title += "User List";
+}
+
+<h1>Users</h1>
+<button class="btn btn-default" onclick="location.href='/'">
+    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+    Back
+</button>
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Birth Date</th>
+            <th>Personal Number</th>
+            <th>Type</th>
+            <th>State</th>
+            <th></th>
+        </tr>
+    </thead>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.FirstName</td>
+            <td>@user.LastName</td>
+            <td>@user.BirthDate.ToString("d")</td>
+            <td>@user.PersonalNo</td>
+            <td>@user.Type.GetDescription()</td>
+            <td>@user.State.GetDescription()</td>
+            <td>@Html.ActionLink("Edit", "EditUserInfo", "Users", new { id = user.Id })</td>
+        </tr>
+
+    }
+</table>

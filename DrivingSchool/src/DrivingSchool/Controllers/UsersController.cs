@@ -6,6 +6,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
+using Microsoft.AspNetCore.Authorization;
 
 /**
 * @(#) UsersController.cs
@@ -103,6 +107,81 @@ namespace DrivingSchool.Controllers
             }
             ModelState.AddModelError("", "Could not log in.");
             return View(model);
+        }
+
+        [Authorize]
+        public IActionResult ViewUserList()
+        {
+            if (IsManager())
+            {
+                var model = m_userData.GetAll().OrderBy(m => m.Id);
+                return View(model);
+            }
+            return Redirect("/");
+        }
+
+        [HttpGet, Authorize]
+        public IActionResult EditUserInfo(int? id)
+        {
+            if (id == null) id = GetCurrentId();
+            if (IsManager() || GetCurrentId() == id)
+            {
+                var u = m_userData.Get((int)id);
+                var model = new UserEditViewModel
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    BirthDate = u.BirthDate,
+                    PersonalNo = u.PersonalNo,
+                    Type = u.Type,
+                    State = u.State,
+                    StateName = u.State.GetDescription()
+                };
+                return View(model);
+            }
+            return Redirect("/");
+        }
+        [HttpPost, Authorize]
+        public IActionResult EditUserInfo(int? id, UserEditViewModel data)
+        {
+            if (id == null) id = GetCurrentId();
+            if (data.Id == 0) data.Id = (int)id;
+            if (IsManager() || GetCurrentId() == id)
+            {
+                if (!ModelState.IsValid) return View(data);
+                ValidateUserData(data, ModelState);
+                if (!ModelState.IsValid) return View(data);
+                User modified = m_userData.Get((int)id);
+                if (modified == null) return View(data);
+                ((UserData)m_userData).Update(data);
+                m_userData.SaveChanges();
+                return RedirectToAction("ViewUserList");
+            }
+            return Redirect("/");
+        }
+
+        public void ValidateUserData(UserEditViewModel data, ModelStateDictionary state)
+        {
+            if (data.BirthDate > DateTime.Today)
+            {
+                state.AddModelError("BirthDate", "Mustn't be a future date");
+            }
+        }
+
+        public int GetCurrentId()
+        {
+            var currentUserId = m_userManager.GetUserId(User);
+            return ((UserData)m_userData).Get(currentUserId).Id;
+        }
+
+        public bool IsManager()
+        {
+            var currentUserId = m_userManager.GetUserId(User);
+            if(currentUserId != null)
+                return ((UserData)m_userData).Get(currentUserId).Type == UserType.Manager;
+                
+            return false;
         }
     }
 }

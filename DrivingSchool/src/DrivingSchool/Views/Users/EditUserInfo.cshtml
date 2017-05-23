@@ -1,0 +1,52 @@
+﻿@using DrivingSchool.Entities.Enumerations
+@model UserEditViewModel
+
+@{
+    ViewBag.Title += "Edit " + Model.FirstName + " " + Model.LastName;
+}
+<div class="container">
+    <form method="post">
+        <div class="form-group">
+            <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("ViewUserList")'">
+                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                Back
+            </button>
+            <button type="submit" class="btn btn-success">Save</button>
+        </div>
+        <div class="well well-sm">
+            <h1>User edit</h1>
+            <fieldset>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.FirstName)
+                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.LastName)
+                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.BirthDate)
+                    @Html.TextBoxFor(m => m.BirthDate, "{0:yyyy-MM-dd}", new { @class = "form-control datepicker" })
+                    @Html.ValidationMessageFor(m => m.BirthDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PersonalNo)
+                    @Html.TextBoxFor(m => m.PersonalNo, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.PersonalNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Type)
+                    @Html.DropDownListFor(m => m.Type, Html.GetEnumSelectList(typeof(UserType)), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Type, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.State)
+                    @Html.DropDownListFor(m => m.StateName, Html.GetEnumSelectList(typeof(UserState)), new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
+                </div>
+            </fieldset>
+        </div>
+    </form>
+</div>

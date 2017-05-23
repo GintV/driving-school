@@ -3,7 +3,7 @@
  */
 namespace DrivingSchool.ViewModels.Users
 {
-    public class UserDataViewModel
+    public class UserViewModel
     {
     }
     
