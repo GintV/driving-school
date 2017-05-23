@@ -1,15 +1,22 @@
 ﻿@if (User.Identity.IsAuthenticated)
 {
-    <span>Hello, @User.Identity.Name</span>
-    <form method="post" asp-controller="Users" asp-action="Logout" asp-antiforgery="true">
-        <input class="btn btn-default" type="submit" value="Logout" />
+    <ul class="nav navbar-nav"> <!-- TODO: Hide from certain users -->
+        <li><a asp-controller="Autos" asp-action="ViewCarList">Auto</a></li>
+        <li><a asp-controller="Users" asp-action="ViewUserList">Users</a></li>
+    </ul>
+    
+    <form class="navbar-form navbar-right" method="post" asp-controller="Users" asp-action="Logout" asp-antiforgery="true">
+        <div class="form-group">
+            <span>Hello, @User.Identity.Name </span>
+            <a class="btn btn-default" asp-controller="Users" asp-action="EditUserInfo">Edit Profile</a>
+            <input class="btn btn-default" type="submit" value="Logout" />
+        </div>
     </form>
 }
 else
 {
-    <ul class="nav navbar-nav">
+    <ul class="nav navbar-nav navbar-right">
         <li><a asp-controller="Users" asp-action="Register">Register</a></li>
         <li><a asp-controller="Users" asp-action="Login">Login</a></li>
-        <li><a asp-controller="Autos" asp-action="ViewCarList">Auto</a></li>
     </ul>
 }
