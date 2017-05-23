@@ -1,20 +1,9 @@
 ﻿@model IEnumerable<User>
 
 @{ 
-    ViewBag.Title = "Main";
+    ViewBag.Title += "Main";
 }
 
-<h1>Hello from a view!</h1>
-<table>
-    @foreach (var student in Model)
-    {
-        <tr>
-            <td>@student.Id</td>
-            <td>@student.FirstName</td>
-        </tr>
-    }
-</table>
-
-@section footer {
-
-}
+<div class="form col-xs-12 col-md-2">
+    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleEntry">Schedule</a>
+</div>

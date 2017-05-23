@@ -1,0 +1,59 @@
+﻿@model ScheduleChoiseViewModel
+
+@{
+    ViewBag.Title += "Schedule Choise";
+}
+
+
+
+
+<form method="post" asp-antiforgery="true">
+    
+    <div class="well well-sm">
+        
+        <h1>Manage classes</h1>
+        
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label asp-for="SelectedClasses"></label>
+                @Html.DropDownListFor(m => m.SelectedClassesId, Model.SelectedClasses, new { @class = "form-control", @size = 10 })
+            </div>
+            <div class="form-group col-sm-6">
+                <label asp-for="AvailableClasses"></label>
+                @Html.DropDownListFor(m => m.AvailableClassesId, Model.AvailableClasses, new { @class = "form-control", @size = 10 })
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <input name="submit" type="submit" class="btn btn-default" id="right" value="Deselect" />
+            </div>
+            <div class="form-group col-sm-6">
+                <input name="submit" type="submit" class="btn btn-default" id="left" value="Select" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TheoryClasses"></label>
+            @Html.DropDownListFor(m => m.TheoryClassesId, Model.TheoryClasses, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label asp-for="PracticeExam"></label>
+            @Html.DropDownListFor(m => m.PracticeExamId, Model.PracticeExam, new { @class = "form-control" })
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TheoryExam"></label>
+            @Html.DropDownListFor(m => m.TheoryExamId, Model.TheoryExam, new { @class = "form-control" })
+        </div>
+
+    </div>
+
+    <div class="form-group">
+        <input type="submit" class="btn btn-default btn-lg" value="Save" />
+    </div>
+
+</form>
+
+<script src="~/manageClasses.js"></script>

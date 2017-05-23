@@ -1,9 +1,8 @@
+using System.Linq;
+
 /**
 * @(#) IService.cs
 */
-
-using System.Linq;
-
 namespace DrivingSchool.Services
 {
     public interface IDataService<T>

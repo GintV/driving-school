@@ -101,7 +101,7 @@ namespace DrivingSchool.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("Main", "Home");
+                        return RedirectToAction("Index", "Home");
                     }
                 }
             }

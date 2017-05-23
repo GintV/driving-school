@@ -82,7 +82,7 @@ namespace DrivingSchool
 
             app.UseMvc(ConfigureRoutes);
 
-            //app.Run(context => context.Response.WriteAsync("Opps! Nothing to see here."));
+            app.Run(context => context.Response.WriteAsync("Opps! Nothing to see here."));
         }
 
         private void ConfigureRoutes(IRouteBuilder routeBuilder) =>

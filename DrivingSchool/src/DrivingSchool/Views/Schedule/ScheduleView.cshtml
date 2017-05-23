@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ScheduleViewModel>
+
+@{
+    ViewBag.Title += "Schedule View";
+}
+
+<link href="~/calendar.css" rel="stylesheet" />
+
+<div id="calendar"></div>
+
+<script>
+    var eventsData = @Html.Raw(Json.Serialize(Model));
+</script>
+
+<script src="~/getCalendar.js"></script>

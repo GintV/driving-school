@@ -1,5 +1,6 @@
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
@@ -12,18 +13,19 @@ namespace DrivingSchool.Services
     {
         public UserData(DrivingSchoolDbContext context) : base(context) { }
 
-        public override User Get(int id) =>
-            m_context.GenericUsers.FirstOrDefault(user => user.Id == id);
+        public User Get(string guid) => m_context.GenericUsers.
+            FirstOrDefault(s => s.IdentityUser.Id == guid);
 
-        public User Get(string guid) =>
-            m_context.GenericUsers.SingleOrDefault(user => user.IdentityUser.Id == guid);
+        public override User Get(int id) => m_context.GenericUsers.
+            Include(self => self.IdentityUser).
+            FirstOrDefault(user => user.Id == id);
 
-        public override IQueryable<User> GetAll() =>
-            m_context.GenericUsers;
+        public override IQueryable<User> GetAll() => m_context.GenericUsers.
+            Include(self => self.IdentityUser);
 
         public void Update(ViewModels.Users.UserEditViewModel data)
         {
-            
+
             var toUpdate = m_context.GenericUsers.FirstOrDefault(s => s.Id == data.Id);
             if (toUpdate != null)
             {

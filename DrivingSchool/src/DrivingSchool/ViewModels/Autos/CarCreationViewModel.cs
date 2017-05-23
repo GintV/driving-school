@@ -14,7 +14,6 @@ namespace DrivingSchool.ViewModels.Autos
     {
         [Required(ErrorMessage = "Required")]
         [MaxLength(255, ErrorMessage = "Maximum length is 255")]
-        [Display(Name = "Make")]
         public string Brand { get; set; }
 
         [Required(ErrorMessage = "Required")]

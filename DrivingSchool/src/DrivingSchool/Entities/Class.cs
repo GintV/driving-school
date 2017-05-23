@@ -21,5 +21,9 @@ namespace DrivingSchool.Entities
         public Student Student { get; set; }
         public Mark Mark { get; set; }
         public CarUsage CarUsage { get; set; }
+
+        public override string ToString() => $"{Id}. {Date.Date.ToString("yyyy-MM-dd")} " + 
+            $"{StartTime.TimeOfDay}-{EndTime.TimeOfDay} {Instructor.FirstName} " +
+            Instructor.LastName;
     }
 }

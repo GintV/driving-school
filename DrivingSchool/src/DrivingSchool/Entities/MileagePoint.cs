@@ -9,6 +9,7 @@ namespace DrivingSchool.Entities
     public class MileagePoint
     {
         public int Id { get; set; }
+
         [Required]
         public int Mileage { get; set; }
         [Required]

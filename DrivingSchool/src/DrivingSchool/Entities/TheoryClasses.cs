@@ -14,5 +14,7 @@ namespace DrivingSchool.Entities
         public List<Student> Students { get; set; }
         public TheoryClasses MainClasses { get; set; }
         public List<TheoryClasses> AdditionalClasses { get; set; }
+
+        public override string ToString() => base.ToString() + $" ({Weeks} weeks)";
     }
 }
