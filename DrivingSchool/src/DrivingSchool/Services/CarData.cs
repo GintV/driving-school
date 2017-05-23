@@ -56,7 +56,7 @@ namespace DrivingSchool.Services
                                                            d.Type == DocumentType.TechnicalInspection) &&
                                                           d.EndDate < DateTime.Today) == null)
                     {
-                        car.State = car.MileagePoints.FirstOrDefault(p => p.Mileage > car.Mileage) == null ? CarState.Operational : CarState.RequiresService;
+                        car.State = car.MileagePoints.FirstOrDefault(p => p.Mileage < car.Mileage) == null ? CarState.Operational : CarState.RequiresService;
                     }
                     else
                     {
