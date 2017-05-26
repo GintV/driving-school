@@ -1,5 +1,5 @@
-
 using System.ComponentModel.DataAnnotations;
+
 /**
 * @(#) ClassType.cs
 */

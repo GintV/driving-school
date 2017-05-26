@@ -1,19 +1,44 @@
-﻿@{ 
+﻿@model UserType
+@{
     ViewBag.Title += "Schedule Entry";
 }
 
 <div class="form col-xs-12 col-md-2">
-    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleView">View schedule</a>
+    <a class="btn btn-lg btn-default" asp-controller="Schedule" asp-action="ScheduleView">
+        <i class="fa fa-calendar fa-5x"></i><br />
+        <b>View Schedule</b>
+    </a>
 </div>
 
 <div class="form col-xs-12 col-md-2">
-    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleClassList">View classes</a>
+    <a class="btn btn-lg btn-default" asp-controller="Schedule" asp-action="ScheduleClassList">
+        <i class="fa fa-list fa-5x"></i><br />
+        <b>View Classes</b>
+    </a>
 </div>
 
-<div class="form col-xs-12 col-md-2">
-    <a class="btn btn-default" asp-controller="Classes" asp-action="ClassCreation">Create classes</a>
-</div>
+@if (Model == UserType.Student)
+{
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Schedule" asp-action="ScheduleChoise">
+            <i class="fa fa-calendar-plus-o fa-5x"></i><br />
+            <b>Choose Classes</b>
+        </a>
+    </div>
+}
+else
+{
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Classes" asp-action="ClassCreation">
+            <i class="fa fa-edit fa-5x"></i><br />
+            <b>Create Classes</b>
+        </a>
+    </div>
+}
 
 <div class="form col-xs-12 col-md-2">
-    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleChoise">Manage attended classes</a>
+    <a class="btn btn-lg btn-default" asp-controller="Home" asp-action="Main">
+        <i class="fa fa-arrow-left fa-5x"></i><br />
+        <b>Return</b>
+    </a>
 </div>

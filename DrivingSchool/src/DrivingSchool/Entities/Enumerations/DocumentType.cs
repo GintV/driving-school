@@ -1,9 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+
 /**
  * @(#) DocumentType.cs
  */
-
-using System.ComponentModel.DataAnnotations;
-
 namespace DrivingSchool.Entities.Enumerations
 {
     public enum DocumentType

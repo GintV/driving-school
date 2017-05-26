@@ -1,8 +1,6 @@
 ﻿@if (User.Identity.IsAuthenticated)
 {
-    <ul class="nav navbar-nav"> <!-- TODO: Hide from certain users -->
-        <li><a asp-controller="Autos" asp-action="ViewCarList">Auto</a></li>
-        <li><a asp-controller="Users" asp-action="ViewUserList">Users</a></li>
+    <ul class="nav navbar-nav">
     </ul>
     
     <form class="navbar-form navbar-right" method="post" asp-controller="Users" asp-action="Logout" asp-antiforgery="true">

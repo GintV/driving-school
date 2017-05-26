@@ -3,6 +3,7 @@ using System.Linq;
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 /**
 * @(#) TheoryClassesData.cs
@@ -20,5 +21,8 @@ namespace DrivingSchool.Services
         public override IQueryable<TheoryClasses> GetAll() => m_context.TheoryClasses.
             Include(c => c.AdditionalClasses).Include(c => c.Instructor).
             Include(c => c.Mark).Include(c => c.Students);
+
+        public override void RemoveRange(IEnumerable<TheoryClasses> data) => m_context.
+            TheoryClasses.RemoveRange(data);
     }
 }

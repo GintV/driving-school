@@ -18,11 +18,11 @@ namespace DrivingSchool.Controllers
         private UserManager<IdentityUser> m_userManager;
         private IDataService<Class> m_classData;
         private IDataService<TheoryClasses> m_theoryClassesData;
-        private IDataService<Instructor> m_instructorData;
+        private IUserService<Instructor> m_instructorData;
 
         public ClassesController(UserManager<IdentityUser> userManager,
             IDataService<Class> classData, IDataService<TheoryClasses> theoryClassesData,
-            IDataService<Instructor> instructorData)
+            IUserService<Instructor> instructorData)
         {
             m_userManager = userManager;
             m_classData = classData;
@@ -62,8 +62,7 @@ namespace DrivingSchool.Controllers
                         State = ClassState.New,
                         Seats = (int)model.NumberOfSeats,
                         Weeks = (int)model.Weeks,
-                        Instructor = ((InstructorData)m_instructorData).
-                            Get(m_userManager.GetUserId(User))
+                        Instructor = m_instructorData.Get(m_userManager.GetUserId(User))
                     });
                 }
                 else
@@ -75,8 +74,7 @@ namespace DrivingSchool.Controllers
                         EndTime = model.EndTime,
                         Type = model.ClassType,
                         State = ClassState.New,
-                        Instructor = ((InstructorData)m_instructorData).
-                            Get(m_userManager.GetUserId(User))
+                        Instructor = m_instructorData.Get(m_userManager.GetUserId(User))
                     });
                 }
 
@@ -87,7 +85,5 @@ namespace DrivingSchool.Controllers
 
             return View(model);
         }
-
     }
-
 }

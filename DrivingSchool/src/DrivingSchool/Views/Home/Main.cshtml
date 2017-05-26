@@ -1,9 +1,55 @@
-﻿@model IEnumerable<User>
-
-@{ 
+﻿@model UserType
+@{
     ViewBag.Title += "Main";
 }
 
+@if (Model == UserType.Manager)
+{
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Autos" asp-action="ViewCarList">
+            <i class="fa fa-calendar-check-o fa-5x"></i><br />
+            <b>Autos List</b>
+        </a>
+    </div>
+
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Autos" asp-action="Create">
+            <i class="fa fa-calendar-check-o fa-5x"></i><br />
+            <b>Create Auto</b>
+        </a>
+    </div>
+
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Autos" asp-action="ViewUsageReports">
+            <i class="fa fa-calendar-check-o fa-5x"></i><br />
+            <b>Autos Usage Reports</b>
+        </a>
+    </div>
+}
+
+@if (Model != UserType.Student)
+{
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Autos" asp-action="ViewCarUsage">
+            <i class="fa fa-calendar-check-o fa-5x"></i><br />
+            <b>Auto Usage Form</b>
+        </a>
+    </div>
+}
+
 <div class="form col-xs-12 col-md-2">
-    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleEntry">Schedule</a>
+    <a class="btn btn-lg btn-default" asp-controller="Schedule" asp-action="ScheduleEntry">
+        <i class="fa fa-calendar-check-o fa-5x"></i><br />
+        <b>Schedule Entry</b>
+    </a>
 </div>
+
+@if (Model == UserType.Manager)
+{
+    <div class="form col-xs-12 col-md-2">
+        <a class="btn btn-lg btn-default" asp-controller="Users" asp-action="ViewUserList">
+            <i class="fa fa-calendar-check-o fa-5x"></i><br />
+            <b>Users List</b>
+        </a>
+    </div>
+}

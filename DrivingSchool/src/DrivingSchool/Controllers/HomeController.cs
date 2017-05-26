@@ -16,10 +16,10 @@ namespace DrivingSchool.Controllers
     {
         private UserManager<IdentityUser> m_userManager;
         private SignInManager<IdentityUser> m_signInManager;
-        private IDataService<User> m_userData;
+        private IUserService<User> m_userData;
 
         public HomeController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager, IDataService<User> userData)
+            SignInManager<IdentityUser> signInManager, IUserService<User> userData)
         {
             m_userManager = userManager;
             m_signInManager = signInManager;
@@ -32,7 +32,7 @@ namespace DrivingSchool.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var guid = m_userManager.GetUserId(User);
-                if (!(((UserData)m_userData).Get(guid).Type == UserType.None))
+                if (!(m_userData.Get(guid).Type == UserType.None))
                 {
                     return RedirectToAction("Main", "Home");
                 }
@@ -45,7 +45,7 @@ namespace DrivingSchool.Controllers
 
         public IActionResult Main()
         {
-            var model = m_userData.GetAll();
+            var model = m_userData.Get(m_userManager.GetUserId(User)).Type;
 
             return View(model);
         }

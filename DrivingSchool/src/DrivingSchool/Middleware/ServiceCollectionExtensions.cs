@@ -10,11 +10,11 @@ namespace Microsoft.Extensions.DependencyInjection
             AddScoped<IDataService<CarUsage>, CarUsageData>().
             AddScoped<IDataService<Class>, ClassData>().
             AddScoped<IDataService<Document>, DocumentData>().
-            AddScoped<IDataService<Instructor>, InstructorData>().
+            AddScoped<IUserService<Instructor>, InstructorData>().
             AddScoped<IDataService<Mark>, MarkData>().
             AddScoped<IDataService<MileagePoint>, MileagePointData>().
-            AddScoped<IDataService<Student>, StudentData>().
+            AddScoped<IUserService<Student>, StudentData>().
             AddScoped<IDataService<TheoryClasses>, TheoryClassesData>().
-            AddScoped<IDataService<User>, UserData>();
+            AddScoped<IUserService<User>, UserData>();
     }
 }

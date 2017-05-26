@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 
 /**
@@ -11,6 +12,7 @@ namespace DrivingSchool.Services
         T Get(int id);
         IQueryable<T> GetAll();
         void Remove(T data);
+        void RemoveRange(IEnumerable<T> data);
         void SaveChanges();
         void Update(T data);
     }

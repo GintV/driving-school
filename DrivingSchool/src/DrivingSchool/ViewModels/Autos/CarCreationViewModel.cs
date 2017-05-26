@@ -1,13 +1,12 @@
-/**
- * @(#) CarCreationViewModel.cs
- */
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Enumerations;
 
+/**
+ * @(#) CarCreationViewModel.cs
+ */
 namespace DrivingSchool.ViewModels.Autos
 {
     public class CarCreationViewModel

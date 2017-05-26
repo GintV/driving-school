@@ -1,8 +1,7 @@
-
 using System;
 using System.ComponentModel.DataAnnotations;
 using DrivingSchool.Entities.Enumerations;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+
 /**
 * @(#) UserDataEditViewModel.cs
 */

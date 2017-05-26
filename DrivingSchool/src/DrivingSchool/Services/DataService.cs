@@ -1,7 +1,6 @@
 using DrivingSchool.Entities.Context;
-using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 /**
 * @(#) Service.cs
@@ -20,6 +19,8 @@ namespace DrivingSchool.Services
         public abstract T Get(int id);
 
         public abstract IQueryable<T> GetAll();
+
+        public abstract void RemoveRange(IEnumerable<T> data);
 
         public void Add(T data) => m_context.Add((object)data);
 

@@ -22,5 +22,8 @@ namespace DrivingSchool.Services
 
         public override IQueryable<Class> GetAll() => m_context.Classes.Include(c => c.CarUsage).
             Include(c => c.Instructor).Include(c => c.Mark).Include(c => c.Student);
+
+        public override void RemoveRange(IEnumerable<Class> data) => m_context.Classes.
+            RemoveRange(data);
     }
 }

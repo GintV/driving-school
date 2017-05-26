@@ -19,7 +19,6 @@ namespace DrivingSchool.ViewModels.Schedule
         public string Day { get; set; }
         public string Time { get; set; }
 
-        public override string ToString() =>
-            $"{Month} {Day} {Year} {Time}";
+        public override string ToString() => $"{Month} {Day} {Year} {Time}";
     }
 }

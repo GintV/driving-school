@@ -1,9 +1,7 @@
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 /**
 * @(#) MileagePointData.cs
@@ -14,22 +12,28 @@ namespace DrivingSchool.Services
     {
         public MileagePointData(DrivingSchoolDbContext context) : base(context) { }
 
-        public override MileagePoint Get(int id) =>
-            m_context.MileagePoints.FirstOrDefault(s => s.Id == id);
+        public override MileagePoint Get(int id) => m_context.MileagePoints.
+            FirstOrDefault(s => s.Id == id);
 
-        public override IQueryable<MileagePoint> GetAll() =>
-            m_context.MileagePoints;
+        public override IQueryable<MileagePoint> GetAll() => m_context.MileagePoints;
 
+        public override void RemoveRange(IEnumerable<MileagePoint> data) => m_context.
+            MileagePoints.RemoveRange(data);
+    }
 
+    public static class MileagePointDataServiceExtensions
+    {
+        public static IEnumerable<MileagePoint>
+            GetCarsMileagePoints(this IDataService<MileagePoint> data, Car car) => data.GetAll().
+            Where(p => p.OwnerCar == car).OrderBy(p => p.Mileage);
 
-        public IQueryable<MileagePoint> GetCarsMileagePoints(Car car)
+        public static void UpdateCarsMileagePoints(this IDataService<MileagePoint> data, Car car,
+            List<MileagePoint> points)
         {
-            return m_context.MileagePoints.Where(p => p.OwnerCar == car);
-        }
-
-        public void UpdateCarsMileagePoints(Car car, List<MileagePoint> points)
-        {
-            m_context.Database.ExecuteSqlCommand("DELETE FROM MileagePoints WHERE OwnerCarId = {0}", car.Id);
+            //m_context.Database.
+            //    ExecuteSqlCommand("DELETE FROM MileagePoints WHERE OwnerCarId = {0}", car.Id);
+            data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car).ToList());
+            data.SaveChanges();
             car.MileagePoints = points;
         }
     }

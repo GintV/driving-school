@@ -8,7 +8,6 @@ using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.AspNetCore.Mvc.Routing;
 
 /**
 * @(#) AutosController.cs
@@ -21,7 +20,8 @@ namespace DrivingSchool.Controllers
         private IDataService<MileagePoint> m_mileagePointData;
         private IDataService<Document> m_documentData;
 
-        public AutosController(IDataService<Car> carData, IDataService<MileagePoint> mileagePointData, IDataService<Document> documentData)
+        public AutosController(IDataService<Car> carData,
+            IDataService<MileagePoint> mileagePointData, IDataService<Document> documentData)
         {
             m_carData = carData;
             m_mileagePointData = mileagePointData;
@@ -38,8 +38,8 @@ namespace DrivingSchool.Controllers
                 ButtonName = "Go back to Vehicle list",
                 ButtonLink = Url.Action("ViewCarList", "Autos")
             });
-            var points = ((MileagePointData)m_mileagePointData).GetCarsMileagePoints(c).OrderBy(p => p.Mileage).ToList();
-            var docs = ((DocumentData)m_documentData).GetCarsDocuments(c).OrderBy(d => d.Type).ThenByDescending(d => d.EndDate).ToList();
+            var points = m_mileagePointData.GetCarsMileagePoints(c).ToList();
+            var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarViewModel
             {
                 Brand = c.Brand,
@@ -60,7 +60,8 @@ namespace DrivingSchool.Controllers
 
         public IActionResult ViewCarList()
         {
-            var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).ThenBy(m => m.Model);
+            var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).
+                ThenBy(m => m.Model);
             return View(model);
         }
 
@@ -94,51 +95,29 @@ namespace DrivingSchool.Controllers
                 Model = data.Model
             };
             m_carData.Add(created);
-            ((DocumentData)m_documentData).UpdateCarsDocuments(created, data.Documents);
-            ((MileagePointData)m_mileagePointData).UpdateCarsMileagePoints(created, data.MileagePoints);
+            m_documentData.UpdateCarsDocuments(created, data.Documents);
+            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints);
             m_carData.SaveChanges();
-            ((CarData)m_carData).UpdateState(created.Id);
+            m_carData.UpdateState(created.Id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarList");
-        }
-
-        public void ViewUsageReports()
-        {
-
-        }
-
-        public void ViewCarUsage()
-        {
-
-        }
-
-        public void SetToFilterByInstructor()
-        {
-
-        }
-
-        public void SetToFilterByCar()
-        {
-
-        }
-
-        public void ViewInstructorsUsages()
-        {
-
         }
 
         [HttpGet]
         public IActionResult EditCarInfo(int id)
         {
             var c = m_carData.Get(id);
-            if (c == null) return View("_Error", new ErrorViewModel
+            if (c == null)
             {
-                ErrorMessage = "Requested car was not found.",
-                ButtonName = "Go back to Vehicle list",
-                ButtonLink = Url.Action("ViewCarList", "Autos")
-            }); ;
-            var points = ((MileagePointData)m_mileagePointData).GetCarsMileagePoints(c).OrderBy(p => p.Mileage).ToList();
-            var docs = ((DocumentData)m_documentData).GetCarsDocuments(c).OrderBy(d => d.Type).ThenByDescending(d => d.EndDate).ToList();
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "Requested car was not found.",
+                    ButtonName = "Go back to Vehicle list",
+                    ButtonLink = Url.Action("ViewCarList", "Autos")
+                });
+            }
+            var points = m_mileagePointData.GetCarsMileagePoints(c).ToList();
+            var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarEditViewModel
             {
                 Brand = c.Brand,
@@ -163,28 +142,13 @@ namespace DrivingSchool.Controllers
             if (!ModelState.IsValid) return View(data);
             Car modified = m_carData.Get(id);
             if (modified == null) return View(data);
-            ((CarData)m_carData).Update(data);
-            ((DocumentData)m_documentData).UpdateCarsDocuments(modified, data.Documents);
-            ((MileagePointData)m_mileagePointData).UpdateCarsMileagePoints(modified, data.MileagePoints);
+            m_carData.Update(data);
+            m_documentData.UpdateCarsDocuments(modified, data.Documents);
+            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints);
             m_carData.SaveChanges();
-            ((CarData)m_carData).UpdateState(id);
+            m_carData.UpdateState(id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarInfo", new { id = data.Id });
-        }
-
-        public void OpenCarUsageInput()
-        {
-
-        }
-
-        public void SaveCarUsage()
-        {
-
-        }
-
-        public void ValidateCarUsageData()
-        {
-
         }
 
         public void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
@@ -203,7 +167,8 @@ namespace DrivingSchool.Controllers
                 {
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
-                        state.AddModelError("Documents[" + i + "].StartDate", "Start date mustn't be greather than end date");
+                        state.AddModelError("Documents[" + i + "].StartDate",
+                            "Start date mustn't be greather than end date");
                     }
                 }
             }
@@ -213,7 +178,8 @@ namespace DrivingSchool.Controllers
                 {
                     if (data.MileagePoints[i].Mileage < 0)
                     {
-                        state.AddModelError("MileagePoints[" + i + "].Mileage", "Mileage must be a positive integer");
+                        state.AddModelError("MileagePoints[" + i + "].Mileage",
+                            "Mileage must be a positive integer");
                     }
                 }
             }
@@ -236,7 +202,8 @@ namespace DrivingSchool.Controllers
                 {
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
-                        state.AddModelError("Documents[" + i + "].StartDate", "Start date mustn't be greather than end date");
+                        state.AddModelError("Documents[" + i + "].StartDate",
+                            "Start date mustn't be greather than end date");
                     }
                 }
             }
@@ -246,12 +213,11 @@ namespace DrivingSchool.Controllers
                 {
                     if (data.MileagePoints[i].Mileage < 0)
                     {
-                        state.AddModelError("MileagePoints[" + i + "].Mileage", "Mileage must be a positive integer");
+                        state.AddModelError("MileagePoints[" + i + "].Mileage",
+                            "Mileage must be a positive integer");
                     }
                 }
             }
         }
-
     }
-
 }

@@ -20,10 +20,10 @@ namespace DrivingSchool.Controllers
     {
         private UserManager<IdentityUser> m_userManager;
         private SignInManager<IdentityUser> m_signInManager;
-        private IDataService<User> m_userData;
+        private IUserService<User> m_userData;
 
         public UsersController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager, IDataService<User> userData)
+            SignInManager<IdentityUser> signInManager, IUserService<User> userData)
         {
             m_userManager = userManager;
             m_signInManager = signInManager;
@@ -117,7 +117,7 @@ namespace DrivingSchool.Controllers
                 var model = m_userData.GetAll().OrderBy(m => m.Id);
                 return View(model);
             }
-            return Redirect("/");
+            return Content("Oops! Nothing to see here.");
         }
 
         [HttpGet, Authorize]
@@ -145,8 +145,11 @@ namespace DrivingSchool.Controllers
         [HttpPost, Authorize]
         public IActionResult EditUserInfo(int? id, UserEditViewModel data)
         {
-            if (id == null) id = GetCurrentId();
-            if (data.Id == 0) data.Id = (int)id;
+            if (id == null)
+                id = GetCurrentId();
+            if (data.Id == 0)
+                data.Id = (int)id;
+
             if (IsManager() || GetCurrentId() == id)
             {
                 if (!ModelState.IsValid) return View(data);
@@ -154,7 +157,7 @@ namespace DrivingSchool.Controllers
                 if (!ModelState.IsValid) return View(data);
                 User modified = m_userData.Get((int)id);
                 if (modified == null) return View(data);
-                ((UserData)m_userData).Update(data);
+                m_userData.Update(data);
                 m_userData.SaveChanges();
                 return RedirectToAction("ViewUserList");
             }
@@ -169,19 +172,9 @@ namespace DrivingSchool.Controllers
             }
         }
 
-        public int GetCurrentId()
-        {
-            var currentUserId = m_userManager.GetUserId(User);
-            return ((UserData)m_userData).Get(currentUserId).Id;
-        }
+        public int GetCurrentId() => m_userData.Get(m_userManager.GetUserId(User)).Id;
 
-        public bool IsManager()
-        {
-            var currentUserId = m_userManager.GetUserId(User);
-            if(currentUserId != null)
-                return ((UserData)m_userData).Get(currentUserId).Type == UserType.Manager;
-                
-            return false;
-        }
+        public bool IsManager() => m_userData.Get(m_userManager.GetUserId(User))?.
+            Type == UserType.Manager;
     }
 }

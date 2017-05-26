@@ -2,6 +2,7 @@ using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 /**
@@ -9,11 +10,11 @@ using System.Linq;
 */
 namespace DrivingSchool.Services
 {
-    public class UserData : DataService<User>
+    public class UserData : UserService<User>
     {
         public UserData(DrivingSchoolDbContext context) : base(context) { }
 
-        public User Get(string guid) => m_context.GenericUsers.
+        public override User Get(string guid) => m_context.GenericUsers.
             FirstOrDefault(s => s.IdentityUser.Id == guid);
 
         public override User Get(int id) => m_context.GenericUsers.
@@ -23,10 +24,16 @@ namespace DrivingSchool.Services
         public override IQueryable<User> GetAll() => m_context.GenericUsers.
             Include(self => self.IdentityUser);
 
-        public void Update(ViewModels.Users.UserEditViewModel data)
-        {
+        public override void RemoveRange(IEnumerable<User> data) => m_context.GenericUsers.
+            RemoveRange(data);
+    }
 
-            var toUpdate = m_context.GenericUsers.FirstOrDefault(s => s.Id == data.Id);
+    public static class UserServiceExtensions
+    {
+        public static void Update(this IUserService<User> userData,
+            ViewModels.Users.UserEditViewModel data)
+        {
+            var toUpdate = userData.GetAll().FirstOrDefault(s => s.Id == data.Id);
             if (toUpdate != null)
             {
                 toUpdate.FirstName = data.FirstName;

@@ -21,18 +21,21 @@ namespace DrivingSchool.Controllers
     public class ScheduleController : Controller
     {
         private UserManager<IdentityUser> m_userManager;
-        private IDataService<Instructor> m_instructorData;
-        private IDataService<Student> m_studentData;
+        private IUserService<Instructor> m_instructorData;
+        private IUserService<Student> m_studentData;
+        private IUserService<User> m_userData;
         private IDataService<Class> m_classData;
         private IDataService<TheoryClasses> m_theoryClasses;
 
         public ScheduleController(UserManager<IdentityUser> userManager,
-            IDataService<Instructor> instructorData, IDataService<Student> studentData,
-            IDataService<Class> classData, IDataService<TheoryClasses> theoryClasses)
+            IUserService<Instructor> instructorData, IUserService<Student> studentData,
+            IUserService<User> userData, IDataService<Class> classData,
+            IDataService<TheoryClasses> theoryClasses)
         {
             m_userManager = userManager;
             m_instructorData = instructorData;
             m_studentData = studentData;
+            m_userData = userData;
             m_classData = classData;
             m_theoryClasses = theoryClasses;
         }
@@ -40,7 +43,8 @@ namespace DrivingSchool.Controllers
         [HttpGet]
         public IActionResult ScheduleEntry()
         {
-            return View();
+            var model = m_userData.Get(m_userManager.GetUserId(User)).Type;
+            return View(model);
         }
 
         [HttpGet]
@@ -48,7 +52,7 @@ namespace DrivingSchool.Controllers
         {
             var guid = m_userManager.GetUserId(User);
 
-            var user = ((StudentData)m_studentData).Get(guid);
+            var user = m_studentData.Get(guid);
             List<Class> classes;
             if (user != null)
             {
@@ -60,7 +64,7 @@ namespace DrivingSchool.Controllers
             }
             else
             {
-                classes = ((InstructorData)m_instructorData).Get(guid).TaughtClasses;
+                classes = m_instructorData.Get(guid).TaughtClasses;
             }
 
             var model = new List<ScheduleViewModel>();
@@ -78,7 +82,8 @@ namespace DrivingSchool.Controllers
                     model.Add(new ScheduleViewModel
                     {
                         Title = $"{@class.Type} \n Details",
-                        EventColor = @class.Type == ClassType.TheoryClasses ? "#F74B30" : "#3E94FB",
+                        EventColor = @class.Type == ClassType.TheoryClasses ? "#F74B30" :
+                            "#3E94FB",
                         Start = new Date
                         {
                             Year = date.Year.ToString(),
@@ -107,18 +112,18 @@ namespace DrivingSchool.Controllers
 
             var availablePracticeClasses = m_classData.GetAll().
                 Where(c => c.Type == ClassType.PracticeDrive && c.State == ClassState.New);
-            var selectedPracticeClasses = ((StudentData)m_studentData).Get(guid).
+            var selectedPracticeClasses = m_studentData.Get(guid).
                 AttendedClasses.Where(c => c.Type == ClassType.PracticeDrive);
 
             var theoryClasses = m_theoryClasses.GetAll().Where(c => c.Seats > 0);
-            var selectedTheoryClasses = ((StudentData)m_studentData).Get(guid).TheoryClasses;
+            var selectedTheoryClasses = m_studentData.Get(guid).TheoryClasses;
 
             var practiceExams = m_classData.GetAll().Where(c => c.Type == ClassType.PracticeExam);
-            var selectedPracticeExam = ((StudentData)m_studentData).Get(guid).
+            var selectedPracticeExam = m_studentData.Get(guid).
                 AttendedClasses.Where(c => c.Type == ClassType.PracticeExam).FirstOrDefault();
 
             var theoryExams = m_classData.GetAll().Where(c => c.Type == ClassType.TheoryExam);
-            var selectedTheoryExam = ((StudentData)m_studentData).Get(guid).
+            var selectedTheoryExam = m_studentData.Get(guid).
                 AttendedClasses.Where(c => c.Type == ClassType.TheoryExam).FirstOrDefault();
 
             var model = new ScheduleChoiseViewModel
@@ -144,7 +149,7 @@ namespace DrivingSchool.Controllers
             string submit)
         {
             var guid = m_userManager.GetUserId(User);
-            var user = ((StudentData)m_studentData).Get(guid);
+            var user = m_studentData.Get(guid);
 
             if (submit == "Select")
                 await Task.Run(() =>
@@ -235,7 +240,5 @@ namespace DrivingSchool.Controllers
             m_classData.SaveChanges();
             return RedirectToAction("ScheduleChoise", "Schedule");
         }
-
-
     }
 }

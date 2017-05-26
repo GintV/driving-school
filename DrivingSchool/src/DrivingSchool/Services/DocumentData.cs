@@ -1,9 +1,7 @@
 using DrivingSchool.Entities;
 using DrivingSchool.Entities.Context;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
 /**
 * @(#) DocumentData.cs
@@ -20,16 +18,23 @@ namespace DrivingSchool.Services
         public override IQueryable<Document> GetAll() =>
             m_context.Documents;
 
+        public override void RemoveRange(IEnumerable<Document> data) => m_context.Documents.
+            RemoveRange(data);
+    }
 
+    public static class DocumentDataServiceExtensions
+    {
+        public static IEnumerable<Document>
+            GetCarsDocuments(this IDataService<Document> data, Car car) => data.GetAll().
+            Where(p => p.OwnerCar == car).OrderBy(d => d.Type).ThenByDescending(d => d.EndDate);
 
-        public IQueryable<Document> GetCarsDocuments(Car car)
+        public static void UpdateCarsDocuments(this IDataService<Document> data, Car car,
+            List<Document> docs)
         {
-            return m_context.Documents.Where(p => p.OwnerCar == car);
-        }
-
-        public void UpdateCarsDocuments(Car car, List<Document> docs)
-        {
-            m_context.Database.ExecuteSqlCommand("DELETE FROM Documents WHERE OwnerCarId = {0}", car.Id);
+            //m_context.Database.
+            //    ExecuteSqlCommand("DELETE FROM Documents WHERE OwnerCarId = {0}", car.Id);
+            data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car).ToList());
+            data.SaveChanges();
             car.Documents = docs;
         }
     }
