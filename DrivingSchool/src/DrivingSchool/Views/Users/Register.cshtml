@@ -1,59 +1,69 @@
 ﻿@model RegisterViewModel
 
-@{ 
+@{
     ViewBag.Title += "Register";
 }
 
-<h1>Register</h1>
+<div class="col-lg-4"><!--centravimui--></div>
+<div class="panel panel-default col-lg-4 center-block">
+    <div class="panel-body">
 
-<form method="post" asp-antiforgery="true">
-    
-    <div asp-validation-summary="ModelOnly"></div>
-    
-    <div>
-        <label asp-for="UserName"></label>
-        <input asp-for="UserName" />
-        <span asp-validation-for="UserName"></span>
+        <h1 class="text-center">Register</h1>
+
+        <form method="post" asp-antiforgery="true">
+
+            <div asp-validation-summary="ModelOnly"></div>
+            
+            <fieldset>
+                <div class="form-group">
+                    <label asp-for="UserName">User Name</label>
+                    <input class="form-control" asp-for="UserName" />
+                    <span asp-validation-for="UserName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password">Password</label>
+                    <input class="form-control" asp-for="Password" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Confirm Password</label>
+                    <input class="form-control" asp-for="ConfirmPassword" />
+                    <span asp-validation-for="ConfirmPassword"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="FirstName">First Name</label>
+                    <input class="form-control" asp-for="FirstName" />
+                    <span asp-validation-for="FirstName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LastName">Last Name</label>
+                    <input class="form-control" asp-for="LastName" />
+                    <span asp-validation-for="LastName"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="BirthDate">Date of Birth</label>
+                    <input class="form-control" asp-for="BirthDate" />
+                    <span asp-validation-for="BirthDate"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="PersonalNo">Personal Identity Number</label>
+                    <input class="form-control" asp-for="PersonalNo" />
+                    <span asp-validation-for="PersonalNo"></span>
+                </div>
+
+                <div class="form-group pull-right">
+                    <input class="btn btn-default" type="button" value="Cancel" onclick="location.href='@Url.Action("Login")'" />
+                    <input class="btn btn-success" type="submit" value="Register" />
+                </div>
+
+            </fieldset>
+        </form>
+
     </div>
-
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
-
-    <div>
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" />
-        <span asp-validation-for="ConfirmPassword"></span>
-    </div>
-
-    <div>
-        <label asp-for="FirstName"></label>
-        <input asp-for="FirstName" />
-        <span asp-validation-for="FirstName"></span>
-    </div>
-
-    <div>
-        <label asp-for="LastName"></label>
-        <input asp-for="LastName" />
-        <span asp-validation-for="LastName"></span>
-    </div>
-
-    <div>
-        <label asp-for="BirthDate"></label>
-        <input asp-for="BirthDate" />
-        <span asp-validation-for="BirthDate"></span>
-    </div>
-
-    <div>
-        <label asp-for="PersonalNo"></label>
-        <input asp-for="PersonalNo" />
-        <span asp-validation-for="PersonalNo"></span>
-    </div>
-
-    <div>
-        <input type="submit" value="Register" />
-    </div>
-
-</form>
+</div>
