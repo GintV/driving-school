@@ -4,32 +4,41 @@
     ViewBag.Title += "Login";
 }
 
-<h1>Login</h1>
+<div class="col-lg-4"><!--centravimui--></div>
+<div class="panel panel-default col-lg-4 center-block">
+    <div class="panel-body">
 
-<form method="post" asp-antiforgery="true">
-    
-    <div asp-validation-summary="ModelOnly"></div>
-    
-    <div>
-        <label asp-for="Username"></label>
-        <input asp-for="Username" />
-        <span asp-validation-for="Username"></span>
-    </div>
+        <h1 class="text-center">Login</h1>
 
-    <div>
-        <label asp-for="Password"></label>
-        <input asp-for="Password" />
-        <span asp-validation-for="Password"></span>
-    </div>
+        <form method="post" asp-antiforgery="true">
 
-    <div>
-        <label asp-for="RememberMe"></label>
-        <input asp-for="RememberMe" />
-        <span asp-validation-for="RememberMe"></span>
-    </div>
-    
-    <div>
-        <input type="submit" value="Login" />
-    </div>
+            <div asp-validation-summary="ModelOnly"></div>
 
-</form>
+            <fieldset>
+                <div class="form-group">
+                    <label asp-for="Username"></label>
+                    <input class="form-control" asp-for="Username" />
+                    <span asp-validation-for="Username"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input class="form-control" asp-for="Password" />
+                    <span asp-validation-for="Password"></span>
+                </div>
+
+                    <div class="form-group pull-left">
+                        <label asp-for="RememberMe"></label>
+                        <input asp-for="RememberMe" />
+                        <span asp-validation-for="RememberMe"></span>
+                    </div>
+
+                    <div class="form-group pull-right">
+                        <input class="btn btn-info" type="button" value="Register" onclick="location.href='@Url.Action("Register")'" />
+                        <input class="btn btn-success" type="submit" value="Login" />
+                    </div>
+            </fieldset>
+        </form>
+
+    </div>
+</div>
