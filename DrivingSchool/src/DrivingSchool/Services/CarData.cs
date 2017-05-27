@@ -44,39 +44,37 @@ namespace DrivingSchool.Services
         public static void UpdateState(this IDataService<Car> carData, int id)
         {
             var car = carData.GetAll().FirstOrDefault(c => c.Id == id);
-            if (car == null)
-                return;
-
+            if (car == null) return;
+            var currentDate = DateTime.Today;
             if (car.Documents.
                 FirstOrDefault(d => d.Type == DocumentType.ServiceApprovalOrder &&
-                d.EndDate > DateTime.Today) == null)
+                d.EndDate > currentDate && d.StartDate <= currentDate) != null)
             {
-                if (car.Documents.
-                    FirstOrDefault(d => d.Type == DocumentType.UsageSuspensionOrder &&
-                    d.EndDate > DateTime.Today) == null)
-                {
-                    if (car.Documents.
-                        FirstOrDefault(d => (d.Type == DocumentType.InsurancePolicy ||
-                        d.Type == DocumentType.TechnicalInspection) &&
-                        d.EndDate < DateTime.Today) == null)
-                    {
-                        car.State = car.MileagePoints.
-                            FirstOrDefault(p => p.Mileage < car.Mileage) == null ?
-                            CarState.Operational : CarState.RequiresService;
-                    }
-                    else
-                    {
-                        car.State = CarState.NonOperational;
-                    }
-                }
-                else
-                {
-                    car.State = CarState.Unused;
-                }
+                car.State = CarState.InService;
+            }
+            else if (car.Documents.
+                     FirstOrDefault(d => d.Type == DocumentType.UsageSuspensionOrder &&
+                     d.EndDate > currentDate && d.StartDate <= currentDate) != null)
+            {
+                car.State = CarState.Unused;
+
+            }
+            else if (car.Documents.
+                     FirstOrDefault(d => d.Type == DocumentType.InsurancePolicy &&
+                     d.StartDate <= currentDate &&
+                     d.EndDate > currentDate) == null ||
+                     car.Documents.
+                     FirstOrDefault(d => d.Type == DocumentType.TechnicalInspection &&
+                     d.StartDate <= currentDate &&
+                     d.EndDate > currentDate) == null)
+            {
+                car.State = CarState.NonOperational;
             }
             else
             {
-                car.State = CarState.InService;
+                car.State = car.MileagePoints.FirstOrDefault(p => p.Mileage < car.Mileage) == null
+                    ? CarState.Operational
+                    : CarState.RequiresService;
             }
         }
     }
