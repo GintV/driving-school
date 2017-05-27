@@ -14,6 +14,7 @@ namespace DrivingSchool.Entities.Enumerations
         Operational,
         [Display(Name = "Requires Service")]
         RequiresService,
+        [Display(Name = "Not being Used")]
         Unused
     }
 }
