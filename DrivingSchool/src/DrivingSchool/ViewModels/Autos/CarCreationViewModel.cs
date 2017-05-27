@@ -39,7 +39,7 @@ namespace DrivingSchool.ViewModels.Autos
         public Gearbox Gearbox { get; set; }
 
         public List<Document> Documents { get; set; }
-        public List<MileagePoint> MileagePoints { get; set; }
+        public List<MileagePointBase> MileagePoints { get; set; }
     }
 
 }
