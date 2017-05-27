@@ -1,6 +1,7 @@
 using DrivingSchool.Entities.Context;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 /**
 * @(#) Service.cs
@@ -30,5 +31,4 @@ namespace DrivingSchool.Services
 
         public void Update(T data) => m_context.Update((object)data);
     }
-
 }

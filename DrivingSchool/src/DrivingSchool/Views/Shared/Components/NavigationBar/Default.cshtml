@@ -1,11 +1,13 @@
-﻿@if (User.Identity.IsAuthenticated)
+﻿@model User
+
+@if (User.Identity.IsAuthenticated)
 {
     <ul class="nav navbar-nav">
     </ul>
     
     <form class="navbar-form navbar-right" method="post" asp-controller="Users" asp-action="Logout" asp-antiforgery="true">
         <div class="form-group">
-            <span>Hello, @User.Identity.Name </span>
+            <span>Hello, @Model</span>
             <a class="btn btn-default" asp-controller="Users" asp-action="EditUserInfo">Edit Profile</a>
             <input class="btn btn-default" type="submit" value="Logout" />
         </div>

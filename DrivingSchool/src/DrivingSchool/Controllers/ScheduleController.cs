@@ -41,6 +41,53 @@ namespace DrivingSchool.Controllers
         }
 
         [HttpGet]
+        public IActionResult ScheduleClassList()
+        {
+            var guid = m_userManager.GetUserId(User);
+
+            var user = m_studentData.Get(guid);
+            List<Class> classes;
+            if (user != null)
+            {
+                classes = user.AttendedClasses;
+                if (user.TheoryClasses != null)
+                {
+                    classes.Add(user.TheoryClasses);
+                }
+            }
+            else
+            {
+                classes = m_instructorData.Get(guid).TaughtClasses;
+            }
+
+            var model = new ScheduleClassListViewModel
+            {
+                UserType = m_userData.Get(m_userManager.GetUserId(User)).Type,
+                List = new List<ScheduleClassListViewModel.ScheduleClassList>()
+            };
+
+
+            foreach (var @class in classes)
+            {
+                var atendee = model.UserType == UserType.Student ? @class.Instructor.ToString() :
+                    @class.Type != ClassType.TheoryClasses ?
+                    (@class.Student != null ? @class.Student.ToString() : "N/A") :
+                    ((TheoryClasses)@class).Students != null ? "Some" : "N/A";
+
+                model.List.Add(new ScheduleClassListViewModel.ScheduleClassList
+                {
+                    Id = @class.Id,
+                    ClassType = @class.Type,
+                    StartTime = @class.StartTime,
+                    EndTime = @class.EndTime,
+                    Atendee = atendee
+                });
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
         public IActionResult ScheduleEntry()
         {
             var model = m_userData.Get(m_userManager.GetUserId(User)).Type;
@@ -81,7 +128,8 @@ namespace DrivingSchool.Controllers
 
                     model.Add(new ScheduleViewModel
                     {
-                        Title = $"{@class.Type} \n Details",
+                        Title = $"{@class.Type} \n" +
+                            $@"<a href=/Classes/ClassView/{@class.Id}>Details</a>",
                         EventColor = @class.Type == ClassType.TheoryClasses ? "#F74B30" :
                             "#3E94FB",
                         Start = new Date

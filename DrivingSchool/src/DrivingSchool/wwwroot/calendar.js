@@ -634,7 +634,7 @@
     }
 
     function q(t) {
-        return t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/'/g, "&#039;").replace(/"/g, "&quot;").replace(/\n/g, "<br />")
+        return t.replace(/&/g, "&amp;").replace(/'/g, "&#039;").replace(/"/g, "&quot;").replace(/\n/g, "<br />")
     }
 
     function Y(t) {

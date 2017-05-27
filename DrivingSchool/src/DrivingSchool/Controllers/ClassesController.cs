@@ -80,7 +80,7 @@ namespace DrivingSchool.Controllers
 
                 m_classData.SaveChanges();
 
-                return RedirectToAction("");
+                return RedirectToAction("ScheduleClassList", "Schedule");
             }
 
             return View(model);

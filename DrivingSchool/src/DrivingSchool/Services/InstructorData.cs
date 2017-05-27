@@ -15,7 +15,7 @@ namespace DrivingSchool.Services
 
         public override Instructor Get(string guid) => m_context.Instructors.
             Include(i => i.AssignedCar).Include(i => i.CarUsages).Include(i => i.TaughtClasses).
-            FirstOrDefault(s => s.IdentityUser.Id == guid);
+            ThenInclude(c => c.Student).FirstOrDefault(s => s.IdentityUser.Id == guid);
 
         public override Instructor Get(int id) => m_context.Instructors.
             Include(i => i.AssignedCar).Include(i => i.CarUsages).Include(i => i.TaughtClasses).
