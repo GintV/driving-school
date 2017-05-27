@@ -8,6 +8,7 @@ using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Collections.Generic;
 
 /**
 * @(#) AutosController.cs
@@ -17,11 +18,11 @@ namespace DrivingSchool.Controllers
     public class AutosController : Controller
     {
         private IDataService<Car> m_carData;
-        private IDataService<MileagePoint> m_mileagePointData;
+        private IDataService<MileagePointBase> m_mileagePointData;
         private IDataService<Document> m_documentData;
 
         public AutosController(IDataService<Car> carData,
-            IDataService<MileagePoint> mileagePointData, IDataService<Document> documentData)
+            IDataService<MileagePointBase> mileagePointData, IDataService<Document> documentData)
         {
             m_carData = carData;
             m_mileagePointData = mileagePointData;
