@@ -77,13 +77,13 @@
         <fieldset>
             @if (Model.MileagePoints != null && Model.MileagePoints.Count != 0)
             {
-                foreach (var point in Model.MileagePoints)
+                for (var i = 0; i < Model.MileagePoints.Count; i++)
                 {
                     <div class="form-group form-inline">
                         <label>Mileage</label>
-                        <input class="form-control" type="text" value="@point.Mileage" disabled="disabled" />
+                        @Html.TextBoxFor(m => m.MileagePoints[i].Mileage, new { @class = "form-control", disabled = "disabled"})
                         <label>Message</label>
-                        <input class="form-control" type="date" value="@point.Name" disabled="disabled" />
+                        @Html.TextBoxFor(m => m.MileagePoints[i].Name, new { @class = "form-control", disabled = "disabled" })
                     </div>
                 }
             }
