@@ -32,7 +32,7 @@ namespace DrivingSchool.Services
         {
             //m_context.Database.
             //    ExecuteSqlCommand("DELETE FROM MileagePoints WHERE OwnerCarId = {0}", car.Id);
-            data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car).ToList());
+            data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car));
             data.SaveChanges();
             car.MileagePoints = points;
         }
