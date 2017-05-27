@@ -16,7 +16,7 @@ namespace DrivingSchool.Services
 
         public override TheoryClasses Get(int id) => m_context.TheoryClasses.
             Include(c => c.AdditionalClasses).Include(c => c.Instructor).Include(c => c.Mark).
-            Include(c => c.Students).FirstOrDefault(s => s.Id == id);
+            Include(c => c.Students).FirstOrDefault(s => s.Id == id) ?? new TheoryClasses();
 
         public override IQueryable<TheoryClasses> GetAll() => m_context.TheoryClasses.
             Include(c => c.AdditionalClasses).Include(c => c.Instructor).
