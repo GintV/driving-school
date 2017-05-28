@@ -36,6 +36,7 @@ namespace DrivingSchool
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddApplicationInsightsTelemetry(Configuration);
             services.AddSingleton(Configuration);
             services.AddDataServices();
             services.AddDbContext<DrivingSchoolDbContext>(options =>
