@@ -45,7 +45,7 @@ namespace DrivingSchool.ViewModels.Autos
         public string StateName { get; set; }
 
         public List<Document> Documents { get; set; }
-        public List<MileagePointBase> MileagePoints { get; set; }
+        public List<MileagePoint> MileagePoints { get; set; }
     }
 
 }
