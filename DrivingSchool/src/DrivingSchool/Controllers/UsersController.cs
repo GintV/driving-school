@@ -136,10 +136,7 @@ namespace DrivingSchool.Controllers
                     PersonalNo = u.PersonalNo,
                     Type = u.Type,
                     State = u.State,
-                    StateName = u.State.GetDescription(),
 
-                    CurrentUserType = m_userData.Get(m_userManager.GetUserId(User)).Type,
-               
                     IsManager = IsManager()
                 };
                 return View(model);

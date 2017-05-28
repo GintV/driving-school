@@ -46,7 +46,7 @@
                     @Html.TextBoxFor(m => m.PersonalNo, new { @class = "form-control" })
                     @Html.ValidationMessageFor(m => m.PersonalNo, "", new { @class = "text-danger" })
                 </div>
-                @if (Model.CurrentUserType == UserType.Manager)
+                @if (Model.IsManager)
                 {
                     <div class="form-group">
                         @Html.LabelFor(m => m.Type)
@@ -55,7 +55,7 @@
                     </div>
                     <div class="form-group">
                         @Html.LabelFor(m => m.State)
-                        @Html.DropDownListFor(m => m.StateName, Html.GetEnumSelectList(typeof(UserState)), new { @class = "form-control" })
+                        @Html.DropDownListFor(m => m.State, Html.GetEnumSelectList(typeof(UserState)), new { @class = "form-control" })
                         @Html.ValidationMessageFor(m => m.State, "", new { @class = "text-danger" })
                     </div>
                 }
