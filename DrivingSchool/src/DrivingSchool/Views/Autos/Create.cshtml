@@ -166,6 +166,12 @@
                         $(this).attr("onclick", "removeCheckpoint(" + i + ")");
                     }
                 });
+            $(this).attr("id", "checkpointDiv" + i)
+                .children("span").each(function() {
+                    var currentName = $(this).attr("data-valmsg-for");
+                    var newName = "MileagePoints[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("data-valmsg-for", newName);
+                });
         });
     }
 
@@ -173,7 +179,7 @@
         $("#documentDiv" + index).remove();
         $("div[id^=documentDiv").each(function (i) {
             $(this).attr("id", "documentDiv" + i)
-                .children("input").each(function () {
+                .children("input").each(function() {
                     if ($(this).attr("type") === "date") {
                         var currentName = $(this).attr("name");
                         var newName = "Documents[" + i + "]" + currentName.split("]")[1];
@@ -182,11 +188,18 @@
                     if ($(this).attr("type") === "button") {
                         $(this).attr("onclick", "removeDocument(" + i + ")");
                     }
-                })
+                });
+            $(this).attr("id", "documentDiv" + i)
                 .children("select").each(function () {
                     var currentName = $(this).attr("name");
                     var newName = "Documents[" + i + "]" + currentName.split("]")[1];
                     $(this).attr("name", newName);
+                });
+            $(this).attr("id", "documentDiv" + i)
+                .children("span").each(function () {
+                    var currentName = $(this).attr("data-valmsg-for");
+                    var newName = "Documents[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("data-valmsg-for", newName);
                 });
         });
     }
