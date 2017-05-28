@@ -7,10 +7,20 @@
 <div class="container">
     <form method="post">
         <div class="form-group">
-            <button type="button" class="btn btn-default" onclick="location.href='@Url.Action("ViewUserList")'">
-                <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
-                Back
-            </button>
+            @if (Model.IsManager)
+            {
+                <button type="button" class="btn btn-default" onclick="location.href = '@Url.Action("ViewUserList")'">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    Back
+                </button>
+            }
+            else
+            {
+                <button type="button" class="btn btn-default" onclick="location.href = '@Url.Action("Index", "Home")'">
+                    <span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>
+                    Back
+                </button>
+            }
             <button type="submit" class="btn btn-success">Save</button>
         </div>
         <div class="well well-sm">

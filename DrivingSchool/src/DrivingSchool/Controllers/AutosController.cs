@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 /**
 * @(#) AutosController.cs
@@ -17,21 +20,30 @@ namespace DrivingSchool.Controllers
     public class AutosController : Controller
     {
         private IDataService<Car> m_carData;
-        private IDataService<MileagePoint> m_mileagePointData;
+        private IDataService<MileagePointBase> m_mileagePointData;
         private IDataService<Document> m_documentData;
+        private IUserService<User> m_userData;
+        private UserManager<IdentityUser> m_userManager;
 
         public AutosController(IDataService<Car> carData,
-            IDataService<MileagePoint> mileagePointData, IDataService<Document> documentData)
+            IDataService<MileagePointBase> mileagePointData, IDataService<Document> documentData,
+            IUserService<User> userData, UserManager<IdentityUser> userManager)
         {
             m_carData = carData;
             m_mileagePointData = mileagePointData;
             m_documentData = documentData;
+            m_userData = userData;
+            m_userManager = userManager;
         }
 
+        [HttpGet, Authorize]
         public IActionResult ViewCarInfo(int id)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             var c = m_carData.Get(id);
-            //if (c == null) return RedirectToAction("WrongNeighborhood");
             if (c == null) return View("_Error", new ErrorViewModel
             {
                 ErrorMessage = "Requested car was not found.",
@@ -58,16 +70,25 @@ namespace DrivingSchool.Controllers
             return View(model);
         }
 
+        [HttpGet, Authorize]
         public IActionResult ViewCarList()
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).
                 ThenBy(m => m.Model);
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult Create()
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             return View(new CarCreationViewModel
             {
                 Brand = "",
@@ -79,9 +100,13 @@ namespace DrivingSchool.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult Create(CarCreationViewModel data)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);
             if (!ModelState.IsValid) return View(data);
@@ -96,16 +121,20 @@ namespace DrivingSchool.Controllers
             };
             m_carData.Add(created);
             m_documentData.UpdateCarsDocuments(created, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints);
+            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints.Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(created.Id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarList");
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult EditCarInfo(int id)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             var c = m_carData.Get(id);
             if (c == null)
             {
@@ -116,7 +145,7 @@ namespace DrivingSchool.Controllers
                     ButtonLink = Url.Action("ViewCarList", "Autos")
                 });
             }
-            var points = m_mileagePointData.GetCarsMileagePoints(c).ToList();
+            var points = m_mileagePointData.GetCarsMileagePoints(c).Select(p => p as MileagePoint).ToList();
             var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarEditViewModel
             {
@@ -134,9 +163,13 @@ namespace DrivingSchool.Controllers
             };
             return View(model);
         }
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult EditCarInfo(int id, CarEditViewModel data)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return Content("Oops! Nothing to see here.");
+            }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);
             if (!ModelState.IsValid) return View(data);
@@ -144,14 +177,14 @@ namespace DrivingSchool.Controllers
             if (modified == null) return View(data);
             m_carData.Update(data);
             m_documentData.UpdateCarsDocuments(modified, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints);
+            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints?.Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarInfo", new { id = data.Id });
         }
 
-        public void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
+        private void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
         {
             if (data.ManufactureDate > DateTime.Today)
             {
@@ -168,7 +201,7 @@ namespace DrivingSchool.Controllers
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
                         state.AddModelError("Documents[" + i + "].StartDate",
-                            "Start date mustn't be greather than end date");
+                            "Start date mustn't be greater than end date");
                     }
                 }
             }
@@ -186,7 +219,7 @@ namespace DrivingSchool.Controllers
         }
 
         // TODO interface? merge views?
-        public void ValidateCarData(CarCreationViewModel data, ModelStateDictionary state)
+        private void ValidateCarData(CarCreationViewModel data, ModelStateDictionary state)
         {
             if (data.ManufactureDate > DateTime.Today)
             {
@@ -203,7 +236,7 @@ namespace DrivingSchool.Controllers
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
                         state.AddModelError("Documents[" + i + "].StartDate",
-                            "Start date mustn't be greather than end date");
+                            "Start date mustn't be greater than end date");
                     }
                 }
             }

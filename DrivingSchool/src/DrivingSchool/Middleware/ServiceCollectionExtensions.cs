@@ -12,7 +12,7 @@ namespace Microsoft.Extensions.DependencyInjection
             AddScoped<IDataService<Document>, DocumentData>().
             AddScoped<IUserService<Instructor>, InstructorData>().
             AddScoped<IDataService<Mark>, MarkData>().
-            AddScoped<IDataService<MileagePoint>, MileagePointData>().
+            AddScoped<IDataService<MileagePointBase>, MileagePointData>().
             AddScoped<IUserService<Student>, StudentData>().
             AddScoped<IDataService<TheoryClasses>, TheoryClassesData>().
             AddScoped<IUserService<User>, UserData>();

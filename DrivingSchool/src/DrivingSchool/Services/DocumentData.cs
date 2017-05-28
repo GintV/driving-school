@@ -31,8 +31,6 @@ namespace DrivingSchool.Services
         public static void UpdateCarsDocuments(this IDataService<Document> data, Car car,
             List<Document> docs)
         {
-            //m_context.Database.
-            //    ExecuteSqlCommand("DELETE FROM Documents WHERE OwnerCarId = {0}", car.Id);
             data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car));
             data.SaveChanges();
             car.Documents = docs;
