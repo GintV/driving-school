@@ -16,6 +16,7 @@ namespace DrivingSchool.ViewModels.Schedule
         {
             public int Id { get; set; }
             public ClassType ClassType { get; set; }
+            public DateTime Date { get; set; }
             public DateTime StartTime { get; set; }
             public DateTime EndTime { get; set; }
             public string Atendee { get; set; }

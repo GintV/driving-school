@@ -1,9 +1,18 @@
+
+using DrivingSchool.Entities.Enumerations;
+using System.Collections.Generic;
 /**
- * @(#) ScheduleViewModel.cs
- */
+* @(#) ScheduleViewModel.cs
+*/
 namespace DrivingSchool.ViewModels.Schedule
 {
     public class ScheduleViewModel
+    {
+        public UserType UserType { get; set; }
+        public List<ScheduleClass> List { get; set; }
+    }
+
+    public class ScheduleClass
     {
         public string Title { get; set; }
         public string EventColor { get; set; }

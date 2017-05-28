@@ -28,7 +28,7 @@ namespace DrivingSchool.ViewModels.Classes
         [Required, Display(Name = "Class Type")]
         public ClassType ClassType { get; set; }
 
-        [Required, DataType(DataType.Date)]
+        [Required, DataType(DataType.Date), DateGreaterEqThanToday]
         public DateTime Date { get; set; }
 
         [Required, Display(Name = "Start Time"), DataType(DataType.Time)]
@@ -43,6 +43,8 @@ namespace DrivingSchool.ViewModels.Classes
 
         [Range(1, 16), Display(Name = "Weeks to Repeat", Prompt = "For theory classes only")]
         public int? Weeks { get; set; }
+
+        public string BackAction { get; set; }
     }
 
     public class TimeGreaterThanAttribute : ValidationAttribute
@@ -71,6 +73,29 @@ namespace DrivingSchool.ViewModels.Classes
             else
             {
                 return new ValidationResult("Time must be greater than start time.");
+            }
+        }
+    }
+
+    public class DateGreaterEqThanTodayAttribute : ValidationAttribute
+    {
+        public DateGreaterEqThanTodayAttribute() { }
+
+        private string DateToCompareToFieldName { get; set; }
+
+        protected override ValidationResult IsValid(object value,
+            ValidationContext validationContext)
+        {
+            DateTime earlierDate = DateTime.Today;
+            DateTime laterDate = ((DateTime)value).Date;
+
+            if (laterDate >= earlierDate)
+            {
+                return ValidationResult.Success;
+            }
+            else
+            {
+                return new ValidationResult("Date must be current or later.");
             }
         }
     }

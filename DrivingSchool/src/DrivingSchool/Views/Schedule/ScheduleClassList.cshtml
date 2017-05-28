@@ -35,7 +35,7 @@
     {
         <tr>
             <td>@(@class.ClassType.GetDescription())</td>
-            <td>@(@class.StartTime.Date.ToString("yyyy-MM-dd"))</td>
+            <td>@(@class.Date.ToString("yyyy-MM-dd"))</td>
             <td>@(@class.StartTime.ToString("HH:mm"))</td>
             <td>@(@class.EndTime.ToString("HH:mm"))</td>
             <td>@(@class.Atendee)</td>
@@ -44,3 +44,20 @@
 
     }
 </table>
+
+<div class="form-group col-sm-12"></div>
+
+@if (Model.UserType == UserType.Student)
+{
+    <a class="btn btn-default" asp-controller="Schedule" asp-action="ScheduleChoise">
+        <span class="fa fa-calendar-plus-o"></span><br />
+        <b>Choose Classes</b>
+    </a>
+}
+else
+{
+    <a class="btn btn-default" asp-controller="Classes" asp-action="ClassCreation">
+        <span class="fa fa-edit"></span><br />
+        <b>Create Classes</b>
+    </a>
+}

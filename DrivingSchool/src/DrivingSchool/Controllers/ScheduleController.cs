@@ -66,7 +66,6 @@ namespace DrivingSchool.Controllers
                 List = new List<ScheduleClassListViewModel.ScheduleClassList>()
             };
 
-
             foreach (var @class in classes)
             {
                 var atendee = model.UserType == UserType.Student ? @class.Instructor.ToString() :
@@ -78,6 +77,7 @@ namespace DrivingSchool.Controllers
                 {
                     Id = @class.Id,
                     ClassType = @class.Type,
+                    Date = @class.Date,
                     StartTime = @class.StartTime,
                     EndTime = @class.EndTime,
                     Atendee = atendee
@@ -114,7 +114,11 @@ namespace DrivingSchool.Controllers
                 classes = m_instructorData.Get(guid).TaughtClasses;
             }
 
-            var model = new List<ScheduleViewModel>();
+            var model = new ScheduleViewModel
+            {
+                UserType = m_userData.Get(guid).Type,
+                List = new List<ScheduleClass>()
+            };
 
             foreach (var @class in classes)
             {
@@ -126,7 +130,7 @@ namespace DrivingSchool.Controllers
 
                     var date = @class.Date.AddDays(7 * i);
 
-                    model.Add(new ScheduleViewModel
+                    model.List.Add(new ScheduleClass
                     {
                         Title = $"{@class.Type} \n" +
                             $@"<a href=/Classes/ClassView/{@class.Id}>Details</a>",
@@ -174,6 +178,8 @@ namespace DrivingSchool.Controllers
             var selectedTheoryExam = m_studentData.Get(guid).
                 AttendedClasses.Where(c => c.Type == ClassType.TheoryExam).FirstOrDefault();
 
+            var backAction = Request.Headers["Referer"].ToString().Split('/').Reverse().First();
+
             var model = new ScheduleChoiseViewModel
             {
                 SelectedClasses = new SelectList(selectedPracticeClasses),
@@ -186,7 +192,9 @@ namespace DrivingSchool.Controllers
                 PracticeExamId = selectedPracticeExam?.ToString() ?? "None",
                 TheoryExam = new SelectList(new[] { "None" }.
                     Concat(theoryExams.Select(c => c.ToString()))),
-                TheoryExamId = selectedTheoryExam?.ToString() ?? "None"
+                TheoryExamId = selectedTheoryExam?.ToString() ?? "None",
+                BackAction = backAction == "ScheduleView" ? "ScheduleView" :
+                    backAction == "ScheduleClassList" ? "ScheduleClassList" : "ScheduleEntry"
             };
 
             return View(model);
@@ -209,6 +217,9 @@ namespace DrivingSchool.Controllers
                         @class.Student = user;
                         @class.State = ClassState.Locked;
                     }
+
+                    m_classData.SaveChanges();
+                    return RedirectToAction("ScheduleChoise", "Schedule");
                 });
             else if (submit == "Deselect")
                 await Task.Run(() =>
@@ -220,6 +231,9 @@ namespace DrivingSchool.Controllers
                         @class.Student = null;
                         @class.State = ClassState.New;
                     }
+
+                    m_classData.SaveChanges();
+                    return RedirectToAction("ScheduleChoise", "Schedule");
                 });
             else
             {
@@ -285,8 +299,9 @@ namespace DrivingSchool.Controllers
                 });
             }
 
+
             m_classData.SaveChanges();
-            return RedirectToAction("ScheduleChoise", "Schedule");
+            return RedirectToAction("ScheduleClassList", "Schedule");
         }
     }
 }
