@@ -8,7 +8,8 @@ using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 /**
 * @(#) AutosController.cs
@@ -20,19 +21,30 @@ namespace DrivingSchool.Controllers
         private IDataService<Car> m_carData;
         private IDataService<MileagePointBase> m_mileagePointData;
         private IDataService<Document> m_documentData;
+        private IUserService<User> m_userData;
+        private UserManager<IdentityUser> m_userManager;
 
         public AutosController(IDataService<Car> carData,
-            IDataService<MileagePointBase> mileagePointData, IDataService<Document> documentData)
+            IDataService<MileagePointBase> mileagePointData, IDataService<Document> documentData,
+            IUserService<User> userData, UserManager<IdentityUser> userManager)
         {
             m_carData = carData;
             m_mileagePointData = mileagePointData;
             m_documentData = documentData;
+            m_userData = userData;
+            m_userManager = userManager;
         }
 
         public IActionResult ViewCarInfo(int id)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             var c = m_carData.Get(id);
-            //if (c == null) return RedirectToAction("WrongNeighborhood");
             if (c == null) return View("_Error", new ErrorViewModel
             {
                 ErrorMessage = "Requested car was not found.",
@@ -61,6 +73,13 @@ namespace DrivingSchool.Controllers
 
         public IActionResult ViewCarList()
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).
                 ThenBy(m => m.Model);
             return View(model);
@@ -69,6 +88,13 @@ namespace DrivingSchool.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             return View(new CarCreationViewModel
             {
                 Brand = "",
@@ -83,6 +109,13 @@ namespace DrivingSchool.Controllers
         [HttpPost]
         public IActionResult Create(CarCreationViewModel data)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);
             if (!ModelState.IsValid) return View(data);
@@ -97,7 +130,7 @@ namespace DrivingSchool.Controllers
             };
             m_carData.Add(created);
             m_documentData.UpdateCarsDocuments(created, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints);
+            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints.Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(created.Id);
             m_carData.SaveChanges();
@@ -107,6 +140,13 @@ namespace DrivingSchool.Controllers
         [HttpGet]
         public IActionResult EditCarInfo(int id)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             var c = m_carData.Get(id);
             if (c == null)
             {
@@ -117,7 +157,7 @@ namespace DrivingSchool.Controllers
                     ButtonLink = Url.Action("ViewCarList", "Autos")
                 });
             }
-            var points = m_mileagePointData.GetCarsMileagePoints(c).ToList();
+            var points = m_mileagePointData.GetCarsMileagePoints(c).Select(p => p as MileagePoint).ToList();
             var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarEditViewModel
             {
@@ -138,6 +178,13 @@ namespace DrivingSchool.Controllers
         [HttpPost]
         public IActionResult EditCarInfo(int id, CarEditViewModel data)
         {
+            if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
+            {
+                return View("_Error", new ErrorViewModel
+                {
+                    ErrorMessage = "You don't have permissions to access this page.",
+                });
+            }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);
             if (!ModelState.IsValid) return View(data);
@@ -145,14 +192,14 @@ namespace DrivingSchool.Controllers
             if (modified == null) return View(data);
             m_carData.Update(data);
             m_documentData.UpdateCarsDocuments(modified, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints);
+            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints?.Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarInfo", new { id = data.Id });
         }
 
-        public void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
+        private void ValidateCarData(CarEditViewModel data, ModelStateDictionary state)
         {
             if (data.ManufactureDate > DateTime.Today)
             {
@@ -169,7 +216,7 @@ namespace DrivingSchool.Controllers
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
                         state.AddModelError("Documents[" + i + "].StartDate",
-                            "Start date mustn't be greather than end date");
+                            "Start date mustn't be greater than end date");
                     }
                 }
             }
@@ -187,7 +234,7 @@ namespace DrivingSchool.Controllers
         }
 
         // TODO interface? merge views?
-        public void ValidateCarData(CarCreationViewModel data, ModelStateDictionary state)
+        private void ValidateCarData(CarCreationViewModel data, ModelStateDictionary state)
         {
             if (data.ManufactureDate > DateTime.Today)
             {
@@ -204,7 +251,7 @@ namespace DrivingSchool.Controllers
                     if (data.Documents[i].StartDate > data.Documents[i].EndDate)
                     {
                         state.AddModelError("Documents[" + i + "].StartDate",
-                            "Start date mustn't be greather than end date");
+                            "Start date mustn't be greater than end date");
                     }
                 }
             }

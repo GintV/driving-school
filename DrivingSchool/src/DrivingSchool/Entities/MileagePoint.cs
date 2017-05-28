@@ -12,7 +12,7 @@ namespace DrivingSchool.Entities
 
         [Required]
         public override int Mileage { get; set; }
-        [Required]
+        [Required(ErrorMessage = "The Message field is required.")]
         public override string Name { get; set; }
 
         public override Car OwnerCar { get; set; }

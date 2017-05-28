@@ -18,7 +18,7 @@ namespace DrivingSchool.Services
         public override IQueryable<MileagePointBase> GetAll() => m_context.MileagePoints;
 
         public override void RemoveRange(IEnumerable<MileagePointBase> data) => m_context.
-            MileagePoints.RemoveRange((IEnumerable<MileagePoint>)data);
+            MileagePoints.RemoveRange(data.Select(p => p as MileagePoint));
     }
 
     public static class MileagePointDataServiceExtensions
@@ -32,7 +32,7 @@ namespace DrivingSchool.Services
         {
             data.RemoveRange(data.GetAll().Where(p => p.OwnerCar == car));
             data.SaveChanges();
-            car.MileagePoints = points.Select(p => p as MileagePoint).ToList();
+            car.MileagePoints = points?.Select(p => p as MileagePoint).ToList();
         }
     }
 }
