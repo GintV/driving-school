@@ -24,6 +24,8 @@ namespace DrivingSchool.ViewModels.Users
         public UserType Type { get; set; }
         [EnumDataType(typeof(UserState), ErrorMessage = "Invalid user state.")]
         public UserState State { get; set; }
+        
+        public UserType CurrentUserType { get; set; }
 
         public string StateName { get; set; }
     }

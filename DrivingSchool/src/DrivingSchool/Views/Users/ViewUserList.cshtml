@@ -34,7 +34,23 @@
             <td>@user.BirthDate.ToString("d")</td>
             <td>@user.PersonalNo</td>
             <td>@user.Type.GetDescription()</td>
-            <td>@user.State.GetDescription()</td>
+
+            @if (user.State == UserState.Unverified)
+            {
+                <td style="color: orange">@user.State.GetDescription()</td>
+            }
+            else if (user.State == UserState.Active)
+            {
+                <td style="color: forestgreen">@user.State.GetDescription()</td>
+            }
+            else if (user.State == UserState.Inactive)
+            {
+                <td style="color: gray">@user.State.GetDescription()</td>
+            }
+            else if (user.State == UserState.Blocked)
+            {
+                <td style="color: red">@user.State.GetDescription()</td>
+            }
             <td>@Html.ActionLink("Edit", "EditUserInfo", "Users", new { id = user.Id })</td>
         </tr>
 
