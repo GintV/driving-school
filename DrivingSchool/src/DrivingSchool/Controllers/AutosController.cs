@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 */
 namespace DrivingSchool.Controllers
 {
+    [Authorize]
     public class AutosController : Controller
     {
         private IDataService<Car> m_carData;
@@ -36,7 +37,7 @@ namespace DrivingSchool.Controllers
             m_userManager = userManager;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult ViewCarInfo(int id)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -50,7 +51,8 @@ namespace DrivingSchool.Controllers
                 ButtonName = "Go back to Vehicle list",
                 ButtonLink = Url.Action("ViewCarList", "Autos")
             });
-            var points = m_mileagePointData.GetCarsMileagePoints(c).ToList();
+            var points = m_mileagePointData.GetCarsMileagePoints(c).Select(p => p as MileagePoint).
+                ToList();
             var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarViewModel
             {
@@ -70,7 +72,7 @@ namespace DrivingSchool.Controllers
             return View(model);
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult ViewCarList()
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -82,7 +84,7 @@ namespace DrivingSchool.Controllers
             return View(model);
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult Create()
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -100,7 +102,7 @@ namespace DrivingSchool.Controllers
             });
         }
 
-        [HttpPost, Authorize]
+        [HttpPost]
         public IActionResult Create(CarCreationViewModel data)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -121,14 +123,15 @@ namespace DrivingSchool.Controllers
             };
             m_carData.Add(created);
             m_documentData.UpdateCarsDocuments(created, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints.Select(p => p as MileagePointBase).ToList());
+            m_mileagePointData.UpdateCarsMileagePoints(created, data.MileagePoints.
+                Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(created.Id);
             m_carData.SaveChanges();
             return RedirectToAction("ViewCarList");
         }
 
-        [HttpGet, Authorize]
+        [HttpGet]
         public IActionResult EditCarInfo(int id)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -145,7 +148,8 @@ namespace DrivingSchool.Controllers
                     ButtonLink = Url.Action("ViewCarList", "Autos")
                 });
             }
-            var points = m_mileagePointData.GetCarsMileagePoints(c).Select(p => p as MileagePoint).ToList();
+            var points = m_mileagePointData.GetCarsMileagePoints(c).Select(p => p as MileagePoint).
+                ToList();
             var docs = m_documentData.GetCarsDocuments(c).ToList();
             var model = new CarEditViewModel
             {
@@ -163,7 +167,7 @@ namespace DrivingSchool.Controllers
             };
             return View(model);
         }
-        [HttpPost, Authorize]
+        [HttpPost]
         public IActionResult EditCarInfo(int id, CarEditViewModel data)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
@@ -177,7 +181,8 @@ namespace DrivingSchool.Controllers
             if (modified == null) return View(data);
             m_carData.Update(data);
             m_documentData.UpdateCarsDocuments(modified, data.Documents);
-            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints?.Select(p => p as MileagePointBase).ToList());
+            m_mileagePointData.UpdateCarsMileagePoints(modified, data.MileagePoints?.
+                Select(p => p as MileagePointBase).ToList());
             m_carData.SaveChanges();
             m_carData.UpdateState(id);
             m_carData.SaveChanges();

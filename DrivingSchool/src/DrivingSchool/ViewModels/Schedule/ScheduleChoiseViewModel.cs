@@ -27,5 +27,7 @@ namespace DrivingSchool.ViewModels.Schedule
         public string TheoryExamId { get; set; }
         [Display(Name = "Theory Exam")]
         public SelectList TheoryExam { get; set; }
+
+        public string BackAction { get; set; }
     }
 }

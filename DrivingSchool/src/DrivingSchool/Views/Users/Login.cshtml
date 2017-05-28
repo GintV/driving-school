@@ -1,6 +1,6 @@
 ﻿@model LoginViewModel
 
-@{ 
+@{
     ViewBag.Title += "Login";
 }
 
@@ -27,16 +27,16 @@
                     <span asp-validation-for="Password"></span>
                 </div>
 
-                    <div class="form-group pull-left">
-                        <label asp-for="RememberMe"></label>
-                        <input asp-for="RememberMe" />
-                        <span asp-validation-for="RememberMe"></span>
-                    </div>
+                <div class="form-group pull-left">
+                    <label asp-for="RememberMe"></label>
+                    <input asp-for="RememberMe" />
+                    <span asp-validation-for="RememberMe"></span>
+                </div>
 
-                    <div class="form-group pull-right">
-                        <input class="btn btn-info" type="button" value="Register" onclick="location.href='@Url.Action("Register")'" />
-                        <input class="btn btn-success" type="submit" value="Login" />
-                    </div>
+                <div class="form-group pull-right">
+                    <input class="btn btn-info" type="button" value="Register" onclick="location.href='@Url.Action("Register")'" />
+                    <input class="btn btn-success" type="submit" value="Login" />
+                </div>
             </fieldset>
         </form>
 

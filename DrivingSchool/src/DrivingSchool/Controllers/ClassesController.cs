@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 /**
 * @(#) ClassesController.cs
@@ -33,14 +34,23 @@ namespace DrivingSchool.Controllers
         [HttpGet]
         public IActionResult ClassCreation()
         {
-            var model = new ClassCreationViewModel();
+            var backAction = Request.Headers["Referer"].ToString().Split('/').Reverse().First();
+
+            var model = new ClassCreationViewModel
+            {
+                BackAction = backAction == "ScheduleView" ? "ScheduleView" :
+                    backAction == "ScheduleClassList" ? "ScheduleClassList" : "ScheduleEntry"
+            };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult ClassCreation(ClassCreationViewModel model)
+        public IActionResult ClassCreation(ClassCreationViewModel model, string submit)
         {
+            if(submit == "Generate")
+                return RedirectToAction("ScheduleClassList", "Schedule");
+
             if (ModelState.IsValid)
             {
                 if (model.ClassType == ClassType.TheoryClasses)
@@ -85,5 +95,9 @@ namespace DrivingSchool.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        public IActionResult GenerateTemplateClasses() =>
+            RedirectToAction("ScheduleClassList", "Schedule");
     }
 }
