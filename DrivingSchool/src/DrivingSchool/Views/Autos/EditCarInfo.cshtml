@@ -169,6 +169,12 @@
                         $(this).attr("onclick", "removeCheckpoint(" + i + ")");
                     }
                 });
+            $(this).attr("id", "checkpointDiv" + i)
+                .children("span").each(function () {
+                    var currentName = $(this).attr("data-valmsg-for");
+                    var newName = "MileagePoints[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("data-valmsg-for", newName);
+                });
         });
     }
 
@@ -185,11 +191,18 @@
                     if ($(this).attr("type") === "button") {
                         $(this).attr("onclick", "removeDocument(" + i + ")");
                     }
-                })
+                });
+            $(this).attr("id", "documentDiv" + i)
                 .children("select").each(function () {
                     var currentName = $(this).attr("name");
                     var newName = "Documents[" + i + "]" + currentName.split("]")[1];
                     $(this).attr("name", newName);
+                });
+            $(this).attr("id", "documentDiv" + i)
+                .children("span").each(function () {
+                    var currentName = $(this).attr("data-valmsg-for");
+                    var newName = "Documents[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("data-valmsg-for", newName);
                 });
         });
     }
