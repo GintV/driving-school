@@ -21,13 +21,21 @@ namespace DrivingSchool.Controllers
         private UserManager<IdentityUser> m_userManager;
         private SignInManager<IdentityUser> m_signInManager;
         private IUserService<User> m_userData;
+        private IUserService<Student> m_studentData;
+        private IUserService<Instructor> m_instructorData;
+        private IDataService<Car> m_carData;
 
         public UsersController(UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager, IUserService<User> userData)
+            SignInManager<IdentityUser> signInManager, IUserService<User> userData,
+            IUserService<Student> studentData, IUserService<Instructor> instructorData,
+            IDataService<Car> carData)
         {
             m_userManager = userManager;
             m_signInManager = signInManager;
             m_userData = userData;
+            m_studentData = studentData;
+            m_instructorData = instructorData;
+            m_carData = carData;
         }
 
         [HttpGet]
@@ -126,9 +134,15 @@ namespace DrivingSchool.Controllers
             if (id == null) id = GetCurrentId();
             if (IsManager() || GetCurrentId() == id)
             {
-                var u = m_userData.Get((int)id);
+                User u = m_userData.Get((int)id);
+                if (u == null) u = m_studentData.Get((int)id);
+                if (u == null) u = m_instructorData.Get((int)id);
+                Student s = m_studentData.Get((int)id);
+                Instructor i = m_instructorData.Get((int)id);
+
                 var model = new UserEditViewModel
                 {
+                    // User fields
                     Id = u.Id,
                     FirstName = u.FirstName,
                     LastName = u.LastName,
@@ -137,8 +151,17 @@ namespace DrivingSchool.Controllers
                     Type = u.Type,
                     State = u.State,
 
+                    // Student fields
+                    HasTheoryClasses = s != null ? s.HasTheoryClasses : false,
+                    PracticeCount = s != null ? s.PracticeCount : 0,
+                    
+                    // Instructor
+                    AssignedCar = i != null ? i.AssignedCar : null,
+                    Cars = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).ThenBy(m => m.Model).ToList(),
+
                     IsManager = IsManager()
                 };
+
                 return View(model);
             }
             return Redirect("/");
@@ -153,13 +176,100 @@ namespace DrivingSchool.Controllers
 
             if (IsManager() || GetCurrentId() == id)
             {
+                // Validations
                 if (!ModelState.IsValid) return View(data);
                 ValidateUserData(data, ModelState);
                 if (!ModelState.IsValid) return View(data);
-                User modified = m_userData.Get((int)id);
-                if (modified == null) return View(data);
-                m_userData.Update(data);
-                m_userData.SaveChanges();
+
+                User oldData = m_userData.Get((int)id);
+                if (oldData == null) return View(data);
+
+                if (oldData.Type != data.Type)
+                {
+                    m_userData.Remove(oldData);
+                    switch (data.Type)
+                    {
+                        case UserType.Instructor:
+                            m_instructorData.Add(new Instructor {
+                                FirstName = data.FirstName,
+                                LastName = data.LastName,
+                                BirthDate = data.BirthDate,
+                                PersonalNo = data.PersonalNo,
+                                State = data.State,
+                                Type = data.Type,
+                                IdentityUser = oldData.IdentityUser,
+                                AssignedCar = m_carData.Get(data.AssignedCar.Id)
+                            });
+                            m_instructorData.SaveChanges();
+                            break;
+                        case UserType.Student:
+                            m_studentData.Add(new Student
+                            {
+                                FirstName = data.FirstName,
+                                LastName = data.LastName,
+                                BirthDate = data.BirthDate,
+                                PersonalNo = data.PersonalNo,
+                                State = data.State,
+                                Type = data.Type,
+                                IdentityUser = oldData.IdentityUser,
+                                HasTheoryClasses = data.HasTheoryClasses,
+                                PracticeCount = data.PracticeCount
+                            });
+                            m_studentData.SaveChanges();
+                            break;
+                        case UserType.Manager:
+                            m_instructorData.Add(new Instructor
+                            {
+                                FirstName = data.FirstName,
+                                LastName = data.LastName,
+                                BirthDate = data.BirthDate,
+                                PersonalNo = data.PersonalNo,
+                                State = data.State,
+                                Type = data.Type,
+                                IdentityUser = oldData.IdentityUser,
+                                AssignedCar = m_carData.Get(data.AssignedCar.Id)
+                            });
+                            m_instructorData.SaveChanges();
+                            break;
+                        default:
+                            m_userData.Add(new User
+                            {
+                                FirstName = data.FirstName,
+                                LastName = data.LastName,
+                                BirthDate = data.BirthDate,
+                                PersonalNo = data.PersonalNo,
+                                State = data.State,
+                                Type = data.Type,
+                                IdentityUser = oldData.IdentityUser
+                            });
+                            m_userData.SaveChanges();
+                            break;
+                    }
+                } else
+                {
+                    switch (data.Type)
+                    {
+                        case UserType.Instructor:
+                            data.AssignedCar = m_carData.Get(data.AssignedCar.Id);
+                            m_instructorData.Update(data);
+                            m_instructorData.SaveChanges();
+                            break;
+                        case UserType.Student:
+                            m_studentData.Update(data);
+                            m_studentData.SaveChanges();
+                            break;
+                        case UserType.Manager:
+                            data.AssignedCar = m_carData.Get(data.AssignedCar.Id);
+                            m_instructorData.Update(data);
+                            m_instructorData.SaveChanges();
+                            break;
+                        default:
+                            m_userData.Update(data);
+                            m_userData.SaveChanges();
+                            break;
+                    }
+                }
+                
                 if (IsManager()) return RedirectToAction("ViewUserList");
                 return RedirectToAction("Index", "Home");
             }

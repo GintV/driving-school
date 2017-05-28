@@ -24,5 +24,7 @@ namespace DrivingSchool.Entities
         public List<Document> Documents { get; set; }
         public List<CarUsage> CarUsages { get; set; }
         public List<MileagePoint> MileagePoints { get; set; }
+        
+        public override string ToString() => $"[ {LicensePlate} ] {Brand} {Model}";
     }
 }

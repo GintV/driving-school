@@ -29,4 +29,24 @@ namespace DrivingSchool.Services
         public override void RemoveRange(IEnumerable<Student> data) => m_context.Students.
             RemoveRange(data);
     }
+
+    public static class StudentServiceExtensions
+    {
+        public static void Update(this IUserService<Student> userData,
+            ViewModels.Users.UserEditViewModel data)
+        {
+            var toUpdate = userData.GetAll().FirstOrDefault(s => s.Id == data.Id);
+            if (toUpdate != null)
+            {
+                toUpdate.FirstName = data.FirstName;
+                toUpdate.LastName = data.LastName;
+                toUpdate.BirthDate = data.BirthDate;
+                toUpdate.PersonalNo = data.PersonalNo;
+                toUpdate.Type = data.Type;
+                toUpdate.State = data.State;
+                toUpdate.HasTheoryClasses = data.HasTheoryClasses;
+                toUpdate.PracticeCount = data.PracticeCount;
+            }
+        }
+    }
 }

@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using DrivingSchool.Entities;
 using DrivingSchool.Entities.Enumerations;
 
 /**
@@ -25,7 +27,16 @@ namespace DrivingSchool.ViewModels.Users
         [EnumDataType(typeof(UserState), ErrorMessage = "Invalid user state.")]
         public UserState State { get; set; }
 
+        // Student fields
+        public bool HasTheoryClasses { get; set; }
+        public int PracticeCount { get; set; }
+
+        // Intructor fields
+        public Car AssignedCar { get; set; }
+        public List<Car> Cars { get; set; }
+
         public bool IsManager { get; set; }
+        
     }
     
 }
