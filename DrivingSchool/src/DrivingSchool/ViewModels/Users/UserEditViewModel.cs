@@ -26,6 +26,8 @@ namespace DrivingSchool.ViewModels.Users
         public UserState State { get; set; }
 
         public string StateName { get; set; }
+
+        public bool IsManager { get; set; }
     }
     
 }

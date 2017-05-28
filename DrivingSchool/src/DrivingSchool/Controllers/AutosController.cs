@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using DrivingSchool.Services;
 using DrivingSchool.ViewModels;
 using DrivingSchool.ViewModels.Autos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -35,14 +36,12 @@ namespace DrivingSchool.Controllers
             m_userManager = userManager;
         }
 
+        [HttpGet, Authorize]
         public IActionResult ViewCarInfo(int id)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             var c = m_carData.Get(id);
             if (c == null) return View("_Error", new ErrorViewModel
@@ -71,29 +70,24 @@ namespace DrivingSchool.Controllers
             return View(model);
         }
 
+        [HttpGet, Authorize]
         public IActionResult ViewCarList()
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             var model = m_carData.GetAll().OrderBy(m => m.LicensePlate).ThenBy(m => m.Brand).
                 ThenBy(m => m.Model);
             return View(model);
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult Create()
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             return View(new CarCreationViewModel
             {
@@ -106,15 +100,12 @@ namespace DrivingSchool.Controllers
             });
         }
 
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult Create(CarCreationViewModel data)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);
@@ -137,15 +128,12 @@ namespace DrivingSchool.Controllers
             return RedirectToAction("ViewCarList");
         }
 
-        [HttpGet]
+        [HttpGet, Authorize]
         public IActionResult EditCarInfo(int id)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             var c = m_carData.Get(id);
             if (c == null)
@@ -175,15 +163,12 @@ namespace DrivingSchool.Controllers
             };
             return View(model);
         }
-        [HttpPost]
+        [HttpPost, Authorize]
         public IActionResult EditCarInfo(int id, CarEditViewModel data)
         {
             if (m_userData.Get(m_userManager.GetUserId(User)).Type != UserType.Manager)
             {
-                return View("_Error", new ErrorViewModel
-                {
-                    ErrorMessage = "You don't have permissions to access this page.",
-                });
+                return Content("Oops! Nothing to see here.");
             }
             if (!ModelState.IsValid) return View(data);
             ValidateCarData(data, ModelState);

@@ -136,7 +136,8 @@ namespace DrivingSchool.Controllers
                     PersonalNo = u.PersonalNo,
                     Type = u.Type,
                     State = u.State,
-                    StateName = u.State.GetDescription()
+                    StateName = u.State.GetDescription(),
+                    IsManager = IsManager()
                 };
                 return View(model);
             }
@@ -159,12 +160,13 @@ namespace DrivingSchool.Controllers
                 if (modified == null) return View(data);
                 m_userData.Update(data);
                 m_userData.SaveChanges();
-                return RedirectToAction("ViewUserList");
+                if (IsManager()) return RedirectToAction("ViewUserList");
+                return RedirectToAction("Index", "Home");
             }
             return Redirect("/");
         }
 
-        public void ValidateUserData(UserEditViewModel data, ModelStateDictionary state)
+        private void ValidateUserData(UserEditViewModel data, ModelStateDictionary state)
         {
             if (data.BirthDate > DateTime.Today)
             {
@@ -172,9 +174,9 @@ namespace DrivingSchool.Controllers
             }
         }
 
-        public int GetCurrentId() => m_userData.Get(m_userManager.GetUserId(User)).Id;
+        private int GetCurrentId() => m_userData.Get(m_userManager.GetUserId(User)).Id;
 
-        public bool IsManager() => m_userData.Get(m_userManager.GetUserId(User))?.
+        private bool IsManager() => m_userData.Get(m_userManager.GetUserId(User))?.
             Type == UserType.Manager;
     }
 }
