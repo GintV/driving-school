@@ -66,7 +66,7 @@
                             @Html.TextBoxFor(m => m.Documents[i].StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control" })
                             <label>Valid to</label>
                             @Html.TextBoxFor(m => m.Documents[i].EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control" })
-                            <input type="button" class="btn btn-danger" onclick="removeDocument(@i)" value="-">
+                            <input type="button" name="Documents[@(i)].Remove" class="btn btn-danger" onclick="removeDocument(@i)" value="-">
                             @Html.ValidationMessageFor(m => m.Documents[i].Type, "", new { @class = "text-danger" })
                             @Html.ValidationMessageFor(m => m.Documents[i].StartDate, "", new { @class = "text-danger" })
                             @Html.ValidationMessageFor(m => m.Documents[i].EndDate, "", new { @class = "text-danger" })
@@ -90,7 +90,7 @@
                             @Html.TextBoxFor(m => m.MileagePoints[i].Mileage, new { @class = "form-control" })
                             <label>Message</label>
                             @Html.TextBoxFor(m => m.MileagePoints[i].Name, new { @class = "form-control" })
-                            <input type="button" class="btn btn-danger" onclick="removeCheckpoint(@i)" value="-">
+                            <input type="button" name="MileagePoints[@(i)].Remove" class="btn btn-danger" onclick="removeCheckpoint(@i)" value="-">
                             @Html.ValidationMessageFor(m => m.MileagePoints[i].Mileage, "", new { @class = "text-danger" })
                             @Html.ValidationMessageFor(m => m.MileagePoints[i].Name, "", new { @class = "text-danger" })
                         </div>
@@ -114,7 +114,7 @@
         var mileageInput = $(document.createElement("input")).attr("name", "MileagePoints[" + index + "].Mileage").attr("type", "text").addClass("form-control");
         var messageLabel = $(document.createElement("label")).text("Message");
         var messageInput = $(document.createElement("input")).attr("name", "MileagePoints[" + index + "].Name").attr("type", "text").addClass("form-control");
-        var removeButton = $(document.createElement("input")).attr("type", "button").attr("onclick", "removeCheckpoint(" + index + ")").val("-").attr("class", "btn btn-danger");
+        var removeButton = $(document.createElement("input")).attr("type", "button").attr("onclick", "removeCheckpoint(" + index + ")").val("-").attr("class", "btn btn-danger").attr("name", "MileagePoints[i].Remove");
         var errorForMileage = $(document.createElement("span")).attr("class", "field-validation-valid text-danger")
             .attr("data-valmsg-for", "MileagePoints[" + index + "].Mileage").attr("data-valmsg-replace", "true");
         var errorForMessage = errorForMileage.clone().attr("data-valmsg-for", "MileagePoints[" + index + "].Name");
@@ -137,7 +137,7 @@
         var validFromInput = $(document.createElement("input")).attr("name", "Documents[" + index + "].StartDate").attr("type", "date").addClass("form-control");
         var validToLabel = $(document.createElement("label")).text("Valid To");
         var validToInput = $(document.createElement("input")).attr("name", "Documents[" + index + "].EndDate").attr("type", "date").addClass("form-control");
-        var removeButton = $(document.createElement("input")).attr("type", "button").attr("onclick", "removeDocument(" + index + ")").val("-").attr("class", "btn btn-danger");
+        var removeButton = $(document.createElement("input")).attr("type", "button").attr("onclick", "removeDocument(" + index + ")").val("-").attr("class", "btn btn-danger").attr("name", "MileagePoints[i].Remove");
         var errorForType = $(document.createElement("span")).attr("class", "field-validation-valid text-danger")
             .attr("data-valmsg-for", "Documents[" + index + "].Type").attr("data-valmsg-replace", "true");
         var errorForStart = errorForType.clone().attr("data-valmsg-for", "Documents[" + index + "].StartDate");
@@ -160,11 +160,9 @@
         $("div[id^=checkpointDiv").each(function (i) {
             $(this).attr("id", "checkpointDiv" + i)
                 .children("input").each(function () {
-                    if ($(this).attr("type") === "text" || $(this).attr("type") === "date") {
-                        var currentName = $(this).attr("name");
-                        var newName = "MileagePoints[" + i + "]" + currentName.split("]")[1];
-                        $(this).attr("name", newName);
-                    }
+                    var currentName = $(this).attr("name");
+                    var newName = "MileagePoints[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("name", newName);
                     if ($(this).attr("type") === "button") {
                         $(this).attr("onclick", "removeCheckpoint(" + i + ")");
                     }
@@ -183,11 +181,9 @@
         $("div[id^=documentDiv").each(function (i) {
             $(this).attr("id", "documentDiv" + i)
                 .children("input").each(function () {
-                    if ($(this).attr("type") === "date") {
-                        var currentName = $(this).attr("name");
-                        var newName = "Documents[" + i + "]" + currentName.split("]")[1];
-                        $(this).attr("name", newName);
-                    }
+                    var currentName = $(this).attr("name");
+                    var newName = "Documents[" + i + "]" + currentName.split("]")[1];
+                    $(this).attr("name", newName);
                     if ($(this).attr("type") === "button") {
                         $(this).attr("onclick", "removeDocument(" + i + ")");
                     }
