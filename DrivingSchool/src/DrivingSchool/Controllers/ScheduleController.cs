@@ -208,6 +208,7 @@ namespace DrivingSchool.Controllers
             var user = m_studentData.Get(guid);
 
             if (submit == "Select")
+            {
                 await Task.Run(() =>
                 {
                     int classId;
@@ -219,9 +220,12 @@ namespace DrivingSchool.Controllers
                     }
 
                     m_classData.SaveChanges();
-                    return RedirectToAction("ScheduleChoise", "Schedule");
                 });
+
+                return RedirectToAction("ScheduleChoise", "Schedule");
+            }
             else if (submit == "Deselect")
+            {
                 await Task.Run(() =>
                 {
                     int classId;
@@ -233,8 +237,10 @@ namespace DrivingSchool.Controllers
                     }
 
                     m_classData.SaveChanges();
-                    return RedirectToAction("ScheduleChoise", "Schedule");
                 });
+
+                return RedirectToAction("ScheduleChoise", "Schedule");
+            }
             else
             {
                 await Task.Run(() =>
@@ -256,6 +262,8 @@ namespace DrivingSchool.Controllers
                     {
                         user.TheoryClasses = null;
                     }
+
+                    m_classData.SaveChanges();
                 });
 
                 await Task.Run(() =>
@@ -276,6 +284,8 @@ namespace DrivingSchool.Controllers
                         @class.Student = user;
                         @class.State = ClassState.Locked;
                     }
+
+                    m_classData.SaveChanges();
                 });
 
                 await Task.Run(() =>
@@ -296,12 +306,12 @@ namespace DrivingSchool.Controllers
                         @class.Student = user;
                         @class.State = ClassState.Locked;
                     }
+
+                    m_classData.SaveChanges();
                 });
+
+                return RedirectToAction("ScheduleClassList", "Schedule");
             }
-
-
-            m_classData.SaveChanges();
-            return RedirectToAction("ScheduleClassList", "Schedule");
         }
     }
 }
