@@ -78,11 +78,13 @@
                         @Html.ValidationMessageFor(m => m.HasTheoryClasses, "", new { @class = "text-danger" })
                     </div>
 
+                    var cList = Model.Cars.Select(c => new { Id = c.Id, Name = c.ToString() });
+                    cList = cList.Append(new { Id = -1, Name = "None" });
+                    
                     <div class="form-group" @Html.Raw(instructorFieldsHidden)>
                         @Html.LabelFor(m => m.AssignedCar.Id, "Assigned Car")
                         @Html.DropDownListFor(m => m.AssignedCar.Id, new SelectList(
-                            Model.Cars.Select( c => new { Id = c.Id, Name = c.ToString() }), "Id", "Name"), new { @class = "form-control" }
-                        )
+                            cList, "Id", "Name", -1), new { @class = "form-control" } )
                         @Html.ValidationMessageFor(m => m.AssignedCar.Id, "", new { @class = "text-danger" })
                     </div>
 
