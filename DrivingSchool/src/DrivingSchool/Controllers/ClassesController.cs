@@ -20,20 +20,26 @@ namespace DrivingSchool.Controllers
         private IDataService<Class> m_classData;
         private IDataService<TheoryClasses> m_theoryClassesData;
         private IUserService<Instructor> m_instructorData;
+        private readonly IUserService<User> m_userData;
 
         public ClassesController(UserManager<IdentityUser> userManager,
             IDataService<Class> classData, IDataService<TheoryClasses> theoryClassesData,
-            IUserService<Instructor> instructorData)
+            IUserService<Instructor> instructorData, IUserService<User> userData)
         {
             m_userManager = userManager;
             m_classData = classData;
             m_theoryClassesData = theoryClassesData;
             m_instructorData = instructorData;
+            m_userData = userData;
         }
 
         [HttpGet]
         public IActionResult ClassCreation()
         {
+            var userType = m_userData.Get(m_userManager.GetUserId(User)).Type;
+            if (userType != UserType.Instructor || userType != UserType.Manager)
+                return NotFound();
+
             var backAction = Request.Headers["Referer"].ToString().Split('/').Reverse().First();
 
             var model = new ClassCreationViewModel
@@ -48,7 +54,11 @@ namespace DrivingSchool.Controllers
         [HttpPost]
         public IActionResult ClassCreation(ClassCreationViewModel model, string submit)
         {
-            if(submit == "Generate")
+            var userType = m_userData.Get(m_userManager.GetUserId(User)).Type;
+            if (userType != UserType.Instructor || userType != UserType.Manager)
+                return NotFound();
+
+            if (submit == "Generate")
                 return RedirectToAction("ScheduleClassList", "Schedule");
 
             if (ModelState.IsValid)
